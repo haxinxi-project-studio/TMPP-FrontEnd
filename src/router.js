@@ -23,6 +23,10 @@ export default new Router({
             path: '/new_plan',
             name: 'newPlan',
             component: () => import(/* webpackChunkName: "newPlan" */ './views/aao/NewPlan.vue')
+        },
+        {
+            path: "*",
+            redirect: "/"
         }
     ]
 })
