@@ -8,8 +8,7 @@
 <script>
   export default {
     props: ['title', 'subtitle'],
-    name: "ContentTitle",
-    data: () => ({}),
+    name: "ContentTitle"
   }
 </script>
 
