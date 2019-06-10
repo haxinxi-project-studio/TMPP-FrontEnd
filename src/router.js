@@ -8,6 +8,7 @@ export default new Router({
     base: process.env.BASE_URL,
     routes: [
         {
+            //TODO 根据角色重定向路径
             path: '/',
             redirect: '/plan_list'
         },
@@ -23,6 +24,31 @@ export default new Router({
             path: '/new_plan',
             name: 'newPlan',
             component: () => import(/* webpackChunkName: "newPlan" */ './views/aao/NewPlan.vue')
+        },
+        {
+            path: '/export',
+            name: 'export',
+            component: () => import(/* webpackChunkName: "export" */ './views/aao/Export.vue')
+        },
+        {
+            path: '/discount',
+            name: 'discount',
+            component: () => import(/* webpackChunkName: "discount" */ './views/aao/Discount.vue')
+        },
+        {
+            path: '/buy',
+            name: 'buy',
+            component: () => import(/* webpackChunkName: "buy" */ './views/teacher/Buy.vue')
+        },
+        {
+            path: '/add',
+            name: 'add',
+            component: () => import(/* webpackChunkName: "add" */ './views/teacher/Add.vue')
+        },
+        {
+            path: '/review',
+            name: 'review',
+            component: () => import(/* webpackChunkName: "review" */ './views/Review.vue')
         },
         {
             path: "*",
