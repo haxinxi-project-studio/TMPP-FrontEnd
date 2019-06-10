@@ -9,15 +9,17 @@
         <img class="logo" :src="`${publicPath}logo.png`" alt="logo img"/>
       </div>
       <a-menu theme="dark" mode="inline" :defaultSelectedKeys="['3']">
-        <a-menu-item key="1">
+        <a-menu-item key="1" @click="pushRouter('/new_plan')">
           <a-icon type="plus"/>
           <span>新增计划</span>
         </a-menu-item>
+        <!--START：只有教务处与办公室主任才显示-->
         <a-menu-item key="2">
           <a-icon type="profile"/>
           <span>我的审核</span>
         </a-menu-item>
-        <a-menu-item key="3">
+        <!--END：只有教务处与办公室主任才显示-->
+        <a-menu-item key="3" @click="pushRouter('/plan_list')">
           <a-icon type="align-left"/>
           <span>计划列表</span>
         </a-menu-item>
@@ -29,6 +31,16 @@
           <a-icon type="edit"/>
           <span>折扣管理</span>
         </a-menu-item>
+        <!--START：只有教师角色才显示-->
+        <a-menu-item key="6">
+          <a-icon type="profile"/>
+          <span>我的购书</span>
+        </a-menu-item>
+        <a-menu-item key="7">
+          <a-icon type="edit"/>
+          <span>填写购书信息</span>
+        </a-menu-item>
+        <!--END：只有教师角色才显示-->
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -50,8 +62,8 @@
           </a-menu>
         </a-dropdown>
       </a-layout-header>
-      <a-layout-content :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }">
-        Content
+      <a-layout-content>
+        <router-view/>
       </a-layout-content>
     </a-layout>
   </a-layout>
@@ -67,13 +79,23 @@
       //登录用户
       loginUser: "教务处：舒露"
     }),
+    methods: {
+      /**
+       * 更改路由
+       * @param path 路由路径
+       */
+      pushRouter(path) {
+        this.$router.push(path);
+      },
+    }
   }
 </script>
 
 <style scoped>
-  /*调整菜单栏开关按钮位置*/
+  /*调整菜单栏开关按钮位置和鼠标样式*/
   .trigger {
     padding: 20px;
+    cursor: pointer;
   }
 
   /*logo盒子*/
@@ -96,5 +118,11 @@
 </style>
 
 <style>
-
+  /*内容*/
+  .content-style {
+    margin: 24px 16px;
+    padding: 24px;
+    background: #fff;
+    min-height: 280px;
+  }
 </style>
