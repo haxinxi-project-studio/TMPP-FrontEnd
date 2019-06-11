@@ -7,17 +7,17 @@
         <a-select-option value="jack">Jack</a-select-option>
         <a-select-option value="lucy">Lucy</a-select-option>
       </a-select>
-      开设院系部：
+      &nbsp;开设院系部：
       <a-select defaultValue="lucy" style="width: 120px">
         <a-select-option value="jack">Jack</a-select-option>
         <a-select-option value="lucy">Lucy</a-select-option>
       </a-select>
-      学年：
+      &nbsp;学年：
       <a-select defaultValue="lucy" style="width: 120px">
         <a-select-option value="jack">Jack</a-select-option>
         <a-select-option value="lucy">Lucy</a-select-option>
       </a-select>
-      学期：
+      &nbsp;学期：
       <a-select defaultValue="lucy" style="width: 120px">
         <a-select-option value="jack">Jack</a-select-option>
         <a-select-option value="lucy">Lucy</a-select-option>
