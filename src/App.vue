@@ -97,7 +97,7 @@
     },
     created() {
       //根据当前Url路径选中菜单项
-      let path = location.pathname.substr(1);
+      let path = location.pathname.replace(/[^a-zA-Z]/g,'');
       if (['new_plan', 'review', 'plan_list', 'export', 'discount', 'buy', 'add'].includes(path)) {
         this.selectedMenuKeys = [path];
       }
