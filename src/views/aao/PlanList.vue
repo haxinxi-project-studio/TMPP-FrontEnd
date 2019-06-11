@@ -2,7 +2,7 @@
   <div>
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
-      <a-radio-group>
+      <a-radio-group defaultValue="all" v-model="filterRadioGroupValue" @change="handleFilterRadioChange">
         <a-radio-button value="all">全部</a-radio-button>
         <a-radio-button value="processing">进行中</a-radio-button>
         <a-radio-button value="done">已完成</a-radio-button>
@@ -76,6 +76,11 @@
           title: '计划列表',
           subtitle: '展示历史完成的执行计划和目前正在进的计划，并展示计划状态',
         },
+        //筛选按钮值
+        filterRadioGroupValue: 'all',
+        //原始表格展示数据（未使用过滤按钮过滤）
+        noneFilterData: [],
+        //表格展示数据
         data: [],
         pagination: {
           //是否可以快速跳转至某页
@@ -83,7 +88,9 @@
           //是否可以改变 pageSize
           showSizeChanger: true,
           //默认的每页条数
-          defaultPageSize: 50
+          defaultPageSize: 50,
+          //分页下拉框数据
+          pageSizeOptions: ['10', '30', '50', '70', '100']
         },
         loading: false,
         columns,
@@ -166,10 +173,28 @@
         this.loading = false;
         this.data = json.data.list;
         this.pagination = pagination;
+      },
+      /**
+       * 过滤按钮更新
+       * @param e 事件
+       */
+      handleFilterRadioChange(e) {
+        switch (e.target.value) {
+          case 'all':
+            this.data = this.noneFilterData;
+            break;
+          case 'processing':
+            this.data = this.noneFilterData.filter(d => d.approvalStatus === '进行中');
+            break;
+          case 'done':
+            this.data = this.noneFilterData.filter(d => d.approvalStatus === '已完成');
+            break;
+        }
       }
     },
     mounted() {
       this.fetch();
+      this.noneFilterData = this.data;
     },
   }
 </script>
