@@ -13,7 +13,7 @@
                :pagination="pagination"
                :loading="loading"
                @change="handleTableChange"
-               :scroll="{ x: 2000 }"
+               :scroll="{ x: 3000 }"
                class="table-box"
       >
         <template slot="action" slot-scope="text">
