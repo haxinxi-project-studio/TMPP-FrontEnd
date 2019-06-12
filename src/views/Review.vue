@@ -3,12 +3,11 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       执行计划：
-      <a-select defaultValue="lucy" style="width: 320px;margin-bottom: 15px">
-        <a-select-option value="jack">2018-2019 第一学期 本科 软件学院</a-select-option>
-        <a-select-option value="lucy">2018-2019 第一学期 本科 软件学院</a-select-option>
+      <a-select v-model="nowSelectPlanId" style="width: 320px;margin-bottom: 15px">
+        <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
       </a-select>
-      <a-button class="m-l-2">全部审核通过</a-button>
-      <a-button class="m-l-2">{{exportBtnValue}}</a-button>
+      <a-button class="m-l-2" @click="allPass">全部审核通过</a-button>
+      <a-button class="m-l-2" @click="exportData">{{exportBtnValue}}</a-button>
       <a-table :columns="columns"
                :rowKey="record => record.id"
                :dataSource="data"
@@ -34,6 +33,8 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
+  import {Get, Post} from "../axios";
+  import Api from "../api"
   //表头
   const columns = [
     {
@@ -129,6 +130,10 @@
           title: '我的审核',
           subtitle: '填写购书信息表单',
         },
+        //执行计划下拉框数据
+        planList: [],
+        //目前选择的执行计划ID
+        nowSelectPlanId: '',
         //导出表格按钮值
         exportBtnValue: '',
         //表格展示数据
@@ -244,6 +249,37 @@
         this.data = json.data.list;
         this.pagination = pagination;
       },
+      /**
+       * 初始化执行计划下拉数据
+       */
+      initPlanList() {
+        Get(Api.getUndonePlan)
+          .do(response => {
+            this.planList = response.data.data.map(data => {
+              data.name = data.year + ' 第' + data.term + '学期 ' + data.educationalLevel + ' ' + data.teachingDepartment;
+              return data;
+            });
+            this.nowSelectPlanId = this.planList[0].id;
+          })
+      },
+      /**
+       * 一键审核通过
+       */
+      allPass() {
+        Post(Api.postExaminationPassed)
+          .withSuccessCode(201)
+          .withURLSearchParams({planId: this.nowSelectPlanId})
+          .do(response => {
+            console.log(response)
+          })
+      },
+      /**
+       * 导出表格
+       */
+      exportData() {
+        //TODO 根据用户角色
+        //window.open()
+      }
     },
     created() {
       console.log('created');
@@ -261,6 +297,7 @@
           scopedSlots: {customRender: 'buy'}
         });
       }
+      this.initPlanList();
     },
     mounted() {
       this.fetch();

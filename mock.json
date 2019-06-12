@@ -29,14 +29,25 @@
       }
     ]
   },
-  "comments": [
-    {
-      "id": 1,
-      "body": "some comment",
-      "postId": 1
-    }
-  ],
-  "profile": {
-    "name": "typicode"
+  "undone_plan": {
+    "获取未完成执行计划": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": [
+      {
+        "id": "1",
+        "year": "2018-2019",
+        "term": 1,
+        "teachingDepartment": "软件学院",
+        "educationalLevel": "本科"
+      },
+      {
+        "id": "2",
+        "year": "2018-2019",
+        "term": 2,
+        "teachingDepartment": "软件学院",
+        "educationalLevel": "本科"
+      }
+    ]
   }
 }
