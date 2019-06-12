@@ -62,7 +62,7 @@ export default {
     //教师领取教材汇总表
     getTeacherReceivingTextbook: BASE_URL + '/teacher_receiving_textbook',
     //学生班级领取教材反馈表
-    getAtudentTextbook: BASE_URL + '/atudent_textbook',
+    getStudentTextbook: BASE_URL + '/student_textbook',
     //导出采购教材汇总表
     getProcurementTable: BASE_URL + '/procurement_table',
     //查询所有折扣

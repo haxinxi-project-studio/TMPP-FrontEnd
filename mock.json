@@ -102,5 +102,60 @@
       "firstPage": 1,
       "lastPage": 3
     }
+  },
+  "done_plan": {
+    "获取已完成执行计划": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": [
+      {
+        "id": "1",
+        "year": "2018-2019",
+        "term": 1,
+        "teachingDepartment": "软件学院",
+        "educationalLevel": "本科"
+      },
+      {
+        "id": "2",
+        "year": "2018-2019",
+        "term": 2,
+        "teachingDepartment": "软件学院",
+        "educationalLevel": "本科"
+      }
+    ]
+  },
+  "colleges": {
+    "获取所有学院": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": [
+      {
+        "id": "1",
+        "name": "软件学院"
+      },
+      {
+        "id": "2",
+        "name": "商学院"
+      }
+    ]
+  },
+  "year": {
+    "获取执行计划年": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": [
+      "2018-2019",
+      "2019-2020"
+    ]
+  },
+  "term": {
+    "获取计划学期": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": [
+      1,
+      2
+    ],
+    "id": "2018-2019"
   }
 }
