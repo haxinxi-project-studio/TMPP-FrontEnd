@@ -28,6 +28,9 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
+  import {Get} from "../../axios";
+  import Api from "../../api";
+
   //表头
   const columns = [
     {
@@ -113,66 +116,19 @@
       fetch(params = {}) {
         console.log('params:', params);
         this.loading = true;
-
-        const json = {
-          "code": 200,
-          "msg": "获取计划列表成功",
-          "data": {
-            "pageNum": 1,
-            "pageSize": 2,
-            "size": 5,
-            "orderBy": null,
-            "startRow": 1,
-            "endRow": 5,
-            "total": 11,
-            "pages": 3,
-            "list": [{
-              "id": "1",
-              "year": "2018-2019",
-              "term": 1,
-              "teachingDepartment": "软件学院",
-              "educationalLevel": "本科",
-              "startTime": "2017-10-01 12：00",
-              "endTime": "2017-10-01 12：00",
-              "approvalStatus": "进行中"
-            },
-              {
-                "id": "2",
-                "year": "2018-2019",
-                "term": 1,
-                "teachingDepartment": "软件学院",
-                "educationalLevel": "本科",
-                "startTime": "2017-10-01 12：00",
-                "endTime": "2017-10-01 12：00",
-                "approvalStatus": "已完成"
-              }
-            ],
-            "prePage": 0,
-            "nextPage": 2,
-            "isFirstPage": true,
-            "isLastPage": false,
-            "hasPreviousPage": false,
-            "hasNextPage": true,
-            "navigatePages": 8,
-            "navigatepageNums": [
-              1,
-              2,
-              3
-            ],
-            "navigateFirstPage": 1,
-            "navigateLastPage": 3,
-            "firstPage": 1,
-            "lastPage": 3
-          }
-        };
-
-        const pagination = {...this.pagination};
-        // Read total count from server
-        // pagination.total = data.totalCount;
-        pagination.total = json.data.total;
-        this.loading = false;
-        this.data = json.data.list;
-        this.pagination = pagination;
+        Get(Api.getPlans)
+          .do(response => {
+            const pagination = {...this.pagination};
+            // Read total count from server
+            // pagination.total = data.totalCount;
+            pagination.total = response.data.data.total;
+            this.data = response.data.data.list;
+            this.pagination = pagination;
+            this.noneFilterData = this.data;
+          })
+          .doAfter(() => {
+            this.loading = false;
+          });
       },
       /**
        * 过滤按钮更新
@@ -194,7 +150,6 @@
     },
     mounted() {
       this.fetch();
-      this.noneFilterData = this.data;
     },
   }
 </script>

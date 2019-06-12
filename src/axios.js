@@ -1,6 +1,23 @@
 import axios from 'axios'
 import Vue from 'vue'
 import {CAS_LOGIN_URL} from "./api";
+//错误吐司
+const showErrorToast = function (title, msg, duration = 4.5) {
+    Vue.prototype.$notification['error']({
+        message: title,
+        description: msg,
+        duration: duration
+    });
+};
+//一次显示错误吐司
+let show = false;
+const onceToast = function (msg) {
+    if (show) {
+        return;
+    }
+    showErrorToast('注意：', msg);
+    show = true;
+};
 
 //12s超时
 let instance = axios.create({timeout: 1000 * 12});
@@ -31,7 +48,7 @@ instance.interceptors.response.use(
     // 服务器状态码不是200的情况
     error => {
         if (error.response === undefined) {
-            showErrorToast('网络异常');
+            showErrorToast('网络异常', '请检查网络连接状态后再试', null);
             return Promise.reject(error);
         }
         if (error.response.status) {
@@ -41,19 +58,19 @@ instance.interceptors.response.use(
                     setTimeout(() => {
                         window.location.href = CAS_LOGIN_URL;
                     }, 2000);
-                    once401Toast(error.response.data.msg);
+                    onceToast(error.response.data.msg);
                     return;
                 case 403:
-                    console.log("403");
+                    showErrorToast(403, '权限不足');
                     break;
                 case 404:
-                    console.log("404");
+                    showErrorToast(404, '请求URL不存在');
                     break;
                 case 500:
-                    console.log("500");
+                    showErrorToast(500, '服务器错误', null);
                     break;
                 case 503:
-                    console.log("503");
+                    showErrorToast(503, '服务器错误', null);
                     break;
                 default:
                     console.log(error.response.data.message);
@@ -62,25 +79,6 @@ instance.interceptors.response.use(
         }
     }
 );
-
-const showErrorToast = function (msg) {
-    Vue.$notification['error']({
-        message: 'Error',
-        description: msg,
-    });
-};
-
-let show = false;
-const once401Toast = function (msg) {
-    if (show) {
-        return;
-    }
-    Vue.$notification['error']({
-        message: 'Error',
-        description: msg,
-    });
-    show = true;
-};
 
 const Method = {GET: 0, POST: 1, DELETE: 2, UPDATE: 3, PUT: 4, PATCH: 5};
 
@@ -202,12 +200,12 @@ _request.prototype.do = function (fn) {
             if (response.status === that.code) {
                 fn(response)
             } else {
-                showErrorToast(that.startMsg + response.data.msg);
+                showErrorToast(that.startMsg, response.data.msg);
             }
         })
         .catch(error => {
             if (error.response !== undefined) {
-                showErrorToast(that.startMsg + error.response.data.msg);
+                showErrorToast(that.startMsg, error.response.data.msg);
             }
         })
         .then(() => {

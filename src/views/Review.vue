@@ -19,8 +19,8 @@
       >
         <template slot="buy" slot-scope="text">
           <a-button-group>
-            <a-button>是</a-button>
-            <a-button>否</a-button>
+            <a-button @click="buyBook(true)">是</a-button>
+            <a-button @click="buyBook(false)">否</a-button>
           </a-button-group>
         </template>
         <template slot="action" slot-scope="text">
@@ -153,8 +153,17 @@
       };
     },
     methods: {
+      /**
+       * 驳回处理
+       */
       handleRejectBook(obj) {
-
+        console.log(obj);
+        Post(Api.postTurnDown)
+          .withSuccessCode(201)
+          .withURLSearchParams({id: obj.id})
+          .do(response => {
+            console.log(response);
+          })
       },
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
@@ -279,10 +288,21 @@
       exportData() {
         //TODO 根据用户角色
         //window.open()
+      },
+      /**
+       * 教务处购买样书
+       * @param isBuy 是否买
+       */
+      buyBook(isBuy) {
+        Post(Api.postBuySampleBook)
+          .withSuccessCode(201)
+          .withURLSearchParams({id: this.nowSelectPlanId, isBuyBook: isBuy})
+          .do(response => {
+            console.log(response);
+          })
       }
     },
     created() {
-      console.log('created');
       //TODO 根据用户角色判断显示
       this.exportBtnValue = '导出征订教材计划统计表';
       this.exportBtnValue = '导出采购教材汇总表';
