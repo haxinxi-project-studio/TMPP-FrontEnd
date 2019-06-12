@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Vue from 'vue'
-import {CAS_LOGIN_URL} from "api";
+import {CAS_LOGIN_URL} from "./api";
 
 //12s超时
 let instance = axios.create({timeout: 1000 * 12});

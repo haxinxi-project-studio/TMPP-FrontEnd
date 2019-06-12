@@ -21,22 +21,17 @@
         <a-form-item label="授课部门：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['teaching_department',{rules: [{ required: true, message: '请选择授课部门！' }]}]"
                     placeholder="选择授课部门">
-            <a-select-option value="male">
-              male
-            </a-select-option>
-            <a-select-option value="female">
-              female
+            <a-select-option v-for="teaching_department in formData.teaching_department"
+                             :value="teaching_department.id">
+              {{teaching_department.name}}
             </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="教育层次：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['educational_level',{rules: [{ required: true, message: '请选择教育层次！' }]}]"
                     placeholder="选择教育层次">
-            <a-select-option value="male">
-              male
-            </a-select-option>
-            <a-select-option value="female">
-              female
+            <a-select-option v-for="educational_levels in formData.educational_levels" :value="educational_levels.id">
+              {{educational_levels.name}}
             </a-select-option>
           </a-select>
         </a-form-item>
@@ -61,6 +56,8 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
+  import {Get} from "../../axios";
+  import Api from '../../api'
 
   export default {
     name: "NewPlan",
@@ -80,7 +77,14 @@
           endValue: 2020
         },
         //禁用提交按钮
-        disabledSubmitBtn: false
+        disabledSubmitBtn: false,
+        //表单数据
+        formData: {
+          //授课部门下拉数据
+          teaching_department: [],
+          //教育层次下拉数据
+          educational_levels: []
+        }
       }
     },
     methods: {
@@ -102,7 +106,7 @@
        */
       handleStartNumberChange(value) {
         //起始年份是否小于结束年份
-        if (value >= this.year.endValue) {
+        if (value === undefined || value >= this.year.endValue) {
           this.disabledSubmitBtn = true;
           this.year = {
             startValue: value,
@@ -123,7 +127,7 @@
        * @param value 新值
        */
       handleEndNumberChange(value) {
-        if (this.year.startValue >= value) {
+        if (value === undefined || this.year.startValue >= value) {
           this.disabledSubmitBtn = true;
           this.year = {
             endValue: value,
@@ -159,6 +163,18 @@
           return false;
         }
       },
+      initFormData() {
+        Get(Api.getTeachingDepartments).do(response => {
+          this.formData.teaching_department = response.data.data;
+        });
+        Get(Api.getEducationalLevels).do(response => {
+          this.formData.educational_levels = response.data.data;
+        });
+      }
+    },
+    created() {
+      //初始化表单数据
+      this.initFormData();
     }
   }
 </script>

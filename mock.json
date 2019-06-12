@@ -1,0 +1,42 @@
+{
+  "teaching_departments": {
+    "获取所有授课部门": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": [
+      {
+        "id": "1",
+        "name": "软件学院"
+      },
+      {
+        "id": "2",
+        "name": "商学院"
+      }
+    ]
+  },
+  "educational_levels": {
+    "获取教育层次": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": [
+      {
+        "id": "1",
+        "name": "本科"
+      },
+      {
+        "id": "2",
+        "name": "高职"
+      }
+    ]
+  },
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}
