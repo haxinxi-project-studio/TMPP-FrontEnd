@@ -15,6 +15,10 @@ export const CAS_LOGOUT_URL = BASE_URL + "/logout";
 //以下所有Api必须带请求头Authorization
 
 export default {
+    //获取未完成执行计划
+    getUndonePlan: BASE_URL + '/undone_plan',
+    //下载执行计划
+    getDownPlan: BASE_URL + '/down_plan',
     //获取所有授课部门
     getTeachingDepartments: BASE_URL + '/teaching_departments',
     //获取教育层次
@@ -23,8 +27,8 @@ export default {
     getDownloadPlanTemplate: BASE_URL + '/download_plan_template',
     //提交执行计划
     postPlan: BASE_URL + '/plan',
-    //获取未完成执行计划
-    getUndonePlan: BASE_URL + '/undone_plan',
+    //上传执行计划文件
+    postPlanFile: BASE_URL + '/plan_file',
     //全部审核通过
     postExaminationPassed: BASE_URL + '/examination_passed',
     //导出采购教材汇总表
@@ -39,8 +43,6 @@ export default {
     getPlans: BASE_URL + '/plans',
     //删除执行计划
     deletePlans: BASE_URL + '/plan',
-    //下载执行计划
-    getDownPlan: BASE_URL + '/down_plan',
     //获取所有学院
     getColleges: BASE_URL + '/colleges',
     //获取执行计划年
@@ -75,7 +77,11 @@ export default {
     getTextbookPlanStatistics: BASE_URL + '/textbook_plan_statistics',
     //办公室主任我的审核
     getDirectorReview: BASE_URL + '/director_review',
-    //课程名称
+    //办公室主任驳回
+    postOfficeTurnDown: BASE_URL + '/office_turn_down',
+    //办公室主任全部审核通过
+    postAllPassed: BASE_URL + '/all_passed',
+    //获取课程名称
     getCourseTitles: BASE_URL + '/courseTitles',
     //提交购书信息
     postBookPurchaseInformation: BASE_URL + '/book_purchase_information',
