@@ -163,6 +163,9 @@
           return false;
         }
       },
+      /**
+       * 初始化表单数据
+       */
       initFormData() {
         Get(Api.getTeachingDepartments).do(response => {
           this.formData.teaching_department = response.data.data;

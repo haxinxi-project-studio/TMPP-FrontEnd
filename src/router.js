@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
     mode: 'history',
     base: process.env.BASE_URL,
     routes: [
@@ -55,4 +55,24 @@ export default new Router({
             redirect: "/"
         }
     ]
-})
+});
+/**
+ * 路由全局守卫
+ * 1.如果Url以'/token'开头，放行
+ * 2.如果localStorage中last_path key 有值则放弃当前路由跳至last_path路径
+ */
+router.beforeEach((to, from, next) => {
+    if (to.path.startsWith('/token')) {
+        next();
+        return;
+    }
+    let path = window.localStorage.getItem('last_path');
+    if (path !== null) {
+        window.localStorage.removeItem('last_path');
+        next(path);
+    } else {
+        next();
+    }
+});
+
+export default router;
