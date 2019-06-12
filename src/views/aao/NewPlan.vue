@@ -13,7 +13,7 @@
                           @change="handleEndNumberChange"/>
         </a-form-item>
         <a-form-item label="学期：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-radio-group :defaultValue="1">
+          <a-radio-group :defaultValue="1" v-model="submitData.term">
             <a-radio :value="1">第一学期</a-radio>
             <a-radio :value="2">第二学期</a-radio>
           </a-radio-group>
@@ -44,7 +44,7 @@
               选择文件（支持扩展名：.xls .xlsx）
             </a-button>
           </a-upload>
-          <a href="">下载执行计划模板</a>
+          <a @click="downTemplate">下载执行计划模板</a>
         </a-form-item>
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
           <a-button type="primary" html-type="submit" :disabled="disabledSubmitBtn">提交</a-button>
@@ -56,7 +56,7 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get} from "../../axios";
+  import {Get, Post} from "../../axios";
   import Api from '../../api'
 
   export default {
@@ -84,6 +84,12 @@
           teaching_department: [],
           //教育层次下拉数据
           educational_levels: []
+        },
+        //表单提交数据
+        submitData: {
+          //学期 1 2
+          term: 1,
+          year: '2019-2020'
         }
       }
     },
@@ -97,6 +103,17 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
+            //组装提交数据
+            this.submitData.teachingDepartment = values.teaching_department;
+            this.submitData.educational_level = values.educational_level;
+            //TODO 解构
+            this.submitData.planFile = values.plan.file;
+            Post(Api.postPlan)
+              .withSuccessCode(201)
+              .withURLSearchParams(this.submitData)
+              .do(response => {
+                console.log(response);
+              })
           }
         });
       },
@@ -119,7 +136,8 @@
           this.year = {
             startValue: value,
             endValue: this.year.endValue
-          }
+          };
+          this.submitData.year = this.year.startValue + '-' + this.year.endValue;
         }
       },
       /**
@@ -140,7 +158,8 @@
           this.year = {
             endValue: value,
             startValue: this.year.startValue
-          }
+          };
+          this.submitData.year = this.year.startValue + '-' + this.year.endValue;
         }
       },
       /**
@@ -173,6 +192,12 @@
         Get(Api.getEducationalLevels).do(response => {
           this.formData.educational_levels = response.data.data;
         });
+      },
+      /**
+       * 下载执行计划模板
+       */
+      downTemplate() {
+        window.open(Api.getDownloadPlanTemplate)
       }
     },
     created() {
