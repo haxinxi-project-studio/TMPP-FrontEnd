@@ -4,7 +4,7 @@
     <div class="content-style">
       执行计划：
       <a-select v-model="nowSelectPlanId" style="width: 320px;margin-bottom: 15px">
-        <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
+        <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}</a-select-option>
       </a-select>
       <a-table :columns="columns"
                :rowKey="record => record.id"

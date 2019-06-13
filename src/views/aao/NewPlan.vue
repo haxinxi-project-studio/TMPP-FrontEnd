@@ -21,7 +21,7 @@
         <a-form-item label="授课部门：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['teaching_department',{rules: [{ required: true, message: '请选择授课部门！' }]}]"
                     placeholder="选择授课部门">
-            <a-select-option v-for="teaching_department in formData.teaching_department"
+            <a-select-option v-for="teaching_department in formData.teaching_department" :key="teaching_department.id"
                              :value="teaching_department.id">
               {{teaching_department.name}}
             </a-select-option>
@@ -30,7 +30,8 @@
         <a-form-item label="教育层次：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['educational_level',{rules: [{ required: true, message: '请选择教育层次！' }]}]"
                     placeholder="选择教育层次">
-            <a-select-option v-for="educational_levels in formData.educational_levels" :value="educational_levels.id">
+            <a-select-option v-for="educational_levels in formData.educational_levels" :key="educational_levels.id"
+                             :value="educational_levels.id">
               {{educational_levels.name}}
             </a-select-option>
           </a-select>

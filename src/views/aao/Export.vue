@@ -4,21 +4,23 @@
     <div class="content-style">
       学院：
       <a-select v-model="nowSelectCollegeId" style="width: 120px">
-        <a-select-option v-for="college in collegeList" :value="college.id">{{college.name}}</a-select-option>
+        <a-select-option v-for="college in collegeList" :key="college.id" :value="college.id">{{college.name}}
+        </a-select-option>
       </a-select>
       &nbsp;开设院系部：
       <a-select v-model="nowTeachingDepartmentListId" style="width: 120px">
-        <a-select-option v-for="teachingDepartment in teachingDepartmentList" :value="teachingDepartment.id">
+        <a-select-option v-for="teachingDepartment in teachingDepartmentList" :key="teachingDepartment.id"
+                         :value="teachingDepartment.id">
           {{teachingDepartment.name}}
         </a-select-option>
       </a-select>
       &nbsp;学年：
       <a-select v-model="nowSelectYearId" @change="handleYearChange" style="width: 120px">
-        <a-select-option v-for="year in yearList" :value="year">{{year}}</a-select-option>
+        <a-select-option v-for="year in yearList" :key="year" :value="year">{{year}}</a-select-option>
       </a-select>
       &nbsp;学期：
       <a-select v-model="nowSelectTermId" style="width: 120px">
-        <a-select-option v-for="term in termList" :value="term">{{term}}</a-select-option>
+        <a-select-option v-for="term in termList" :key="term" :value="term">{{term}}</a-select-option>
       </a-select>
       <br/>
       <a-button @click="exportDownBookMaterials" type="primary" icon="download" class="m-t-2">导出征订教材汇总表 ↓</a-button>
@@ -27,7 +29,8 @@
       <a-divider/>
       执行计划：
       <a-select v-model="nowSelectPlanId" style="width: 320px">
-        <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
+        <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
+        </a-select-option>
       </a-select>
       <br/>
       <a-button @click="exportTable(1)" type="primary" icon="download" class="m-t-2">导出考试/考查/总体订书率表 ↓</a-button>

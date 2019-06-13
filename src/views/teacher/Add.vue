@@ -5,14 +5,14 @@
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-model="nowSelectPlanId" @change="handlePlanChange" placeholder="选择执行计划">
-            <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
+            <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}</a-select-option>
           </a-select>
           <a href="">下载该执行计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
                     placeholder="选择课程名称">
-            <a-select-option v-for="courseTitle in courseTitleList" :value="courseTitle.id">
+            <a-select-option v-for="courseTitle in courseTitleList" :key="courseTitle.id" :value="courseTitle.id">
               {{courseTitle.courseCode+'-'+courseTitle.courseTitle}}
             </a-select-option>
           </a-select>
@@ -49,7 +49,7 @@
           </a-form-item>
           <a-form-item label="折扣：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-select v-model="nowSelectDiscountId">
-              <a-select-option v-for="discount in discountList" :value="discount.id">{{discount.discount}}
+              <a-select-option v-for="discount in discountList" :key="discount.id" :value="discount.id">{{discount.discount}}
               </a-select-option>
             </a-select>
           </a-form-item>
