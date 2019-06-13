@@ -1,0 +1,26 @@
+{
+  "short_name": "教材采购系统",
+  "name": "哈信息教材采购系统",
+  "icons": [
+    {
+      "src": "/logo-48.png",
+      "type": "image/png",
+      "sizes": "48x48"
+    },
+    {
+      "src": "/logo-96.png",
+      "type": "image/png",
+      "sizes": "96x96"
+    },
+    {
+      "src": "/logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#fff",
+  "background_color": "#fff"
+}
