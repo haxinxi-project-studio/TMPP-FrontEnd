@@ -10,7 +10,7 @@
           <a href="">下载该执行计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-select v-decorator="['course_name',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
+          <a-select v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
                     placeholder="选择课程名称">
             <a-select-option v-for="courseTitle in courseTitleList" :value="courseTitle.id">
               {{courseTitle.courseCode+'-'+courseTitle.courseTitle}}
@@ -18,7 +18,7 @@
           </a-select>
         </a-form-item>
         <a-form-item label="是否购书：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-radio-group :defaultValue="true" @change="handleByBookRadio">
+          <a-radio-group v-model="submitForm.bookPurchase" @change="handleByBookRadio">
             <a-radio :value="true">是</a-radio>
             <a-radio :value="false">否</a-radio>
           </a-radio-group>
@@ -26,15 +26,15 @@
         <div v-if="isBuyBook">
           <a-form-item label="书号ISBN：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input-number style="width: 200px"
-                            v-decorator="['isbn',{rules: [{ required: true, message: '请输入书号ISBN!' }]}]"/>
+                            v-decorator="['isbn',{rules: [{ required: true, message: '请输入正确的书号ISBN!',validator:valueMustThan0Validator }]}]"/>
           </a-form-item>
           <a-form-item label="教材名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-input v-decorator="['name',{rules: [{ required: true, message: '请输入教材名称!' }]}]"/>
+            <a-input v-decorator="['textBookName',{rules: [{ required: true, message: '请输入教材名称!' }]}]"/>
           </a-form-item>
           <a-form-item label="教材类别：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-radio-group :defaultValue="1">
-              <a-radio :value="1">出版</a-radio>
-              <a-radio :value="2">自编</a-radio>
+            <a-radio-group v-model="submitForm.textBookCategory">
+              <a-radio :value="0">出版</a-radio>
+              <a-radio :value="1">自编</a-radio>
             </a-radio-group>
           </a-form-item>
           <a-form-item label="出版社：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
@@ -43,9 +43,9 @@
           <a-form-item label="作者：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input v-decorator="['author',{rules: [{ required: true, message: '请输入作者!' }]}]"/>
           </a-form-item>
-          <a-form-item label="价格：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+          <a-form-item label="单价：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input-number style="width: 200px"
-                            v-decorator="['price',{rules: [{ required: true, message: '请输入价格!' }]}]"/>
+                            v-decorator="['unitPrice',{rules: [{ required: true, message: '请输入正确的价格!',validator:valueMustThan0Validator }]}]"/>
           </a-form-item>
           <a-form-item label="折扣：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-select v-model="nowSelectDiscountId">
@@ -55,20 +55,20 @@
           </a-form-item>
           <a-form-item label="教师样书数量：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input-number style="width: 200px"
-                            v-decorator="['teacherBookNumber',{rules: [{ required: true, message: '请输入教师样书数量!' }]}]"/>
+                            v-decorator="['teacherBookNumber',{rules: [{ required: true, message: '请输入正确的教师样书数量!',validator:valueMustThan0Validator }]}]"/>
           </a-form-item>
           <a-form-item label="获奖信息和丛书名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input v-decorator="['awardInformation',{rules: [{ required: true, message: '请输入获奖信息和丛书名称!' }]}]"/>
           </a-form-item>
           <a-form-item label="出版日期：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-month-picker/>
+            <a-month-picker @change="handlePublicationDateChange" :defaultValue="defaultPublicationDate"/>
           </a-form-item>
           <a-form-item label="征订人：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input v-decorator="['subscriber',{rules: [{ required: true, message: '请输入征订人!' }]}]"/>
           </a-form-item>
           <a-form-item label="联系电话：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input-number style="width: 200px"
-                            v-decorator="['subscriberNumber',{rules: [{ required: true, message: '请输入联系电话!' }]}]"/>
+                            v-decorator="['subscriberNumber',{rules: [{ required: true, message: '请输入正确的联系电话!',len:11 ,transform:value=>value.toString()}]}]"/>
           </a-form-item>
         </div>
         <div v-else>
@@ -88,8 +88,12 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get} from "../../axios";
+  import {Get, Post} from "../../axios";
   import Api from "../../api";
+  import moment from 'moment';
+  import 'moment/locale/zh-cn';
+
+  moment.locale('zh-cn');
 
   export default {
     name: "Add",
@@ -115,6 +119,16 @@
         discountList: [],
         //目前选择的折扣ID
         nowSelectDiscountId: '',
+        submitForm: {
+          //教材类别
+          textBookCategory: 0,
+          //是否购书
+          bookPurchase: true,
+          //出版日期
+          publicationDate: '2019-01'
+        },
+        //默认出版日期
+        defaultPublicationDate: moment('2019-01', 'YYYY-MM')
       };
     },
     methods: {
@@ -127,6 +141,14 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
+            const s = this.submitForm;
+            this.submitForm = {...s, ...values, discountId: this.nowSelectDiscountId};
+            Post(Api.postBookPurchaseInformation)
+              .withSuccessCode(201)
+              .withURLSearchParams(this.submitForm)
+              .do(response => {
+                console.log(response);
+              })
           }
         });
       },
@@ -164,6 +186,22 @@
       },
       handlePlanChange(id) {
         this.initCourseTitles(id);
+      },
+      handlePublicationDateChange(date, dateString) {
+        this.submitForm.publicationDate = dateString;
+      },
+      /**
+       * 数值必须大于0校验
+       * @param rule 校验规则
+       * @param value 值
+       * @param callback 回调
+       */
+      valueMustThan0Validator(rule, value, callback) {
+        if (value < 1) {
+          callback(value);
+        } else {
+          callback();
+        }
       }
     },
     created() {

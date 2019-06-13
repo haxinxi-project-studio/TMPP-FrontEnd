@@ -118,7 +118,7 @@
         Get(Api.getDiscounts)
           .do(response => {
             console.log(response.data.data);
-            this.discountData = response.data.data.list;
+            this.discountData = response.data.data;
           })
       }
     },

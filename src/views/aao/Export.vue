@@ -135,8 +135,7 @@
        * @param year 学年
        */
       getTerm(year) {
-        //TODO 删除？id
-        Get(Api.getTerm + '/?id' + year)
+        Get(Api.getTerm + '/' + year)
           .do(response => {
             this.termList = response.data.data;
             this.nowSelectTermId = this.termList[0];
