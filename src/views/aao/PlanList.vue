@@ -100,6 +100,9 @@
       };
     },
     methods: {
+      /**
+       *
+       */
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
         const pager = {...this.pagination};
@@ -113,6 +116,9 @@
           ...filters,
         });
       },
+      /**
+       * 表数据
+       */
       fetch(params = {}) {
         console.log('params:', params);
         this.loading = true;

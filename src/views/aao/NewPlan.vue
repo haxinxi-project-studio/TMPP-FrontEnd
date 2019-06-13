@@ -36,7 +36,7 @@
           </a-select>
         </a-form-item>
         <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-upload name="file" :multiple="false" action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+          <a-upload name="planFile" :multiple="false" :action="fileUploadUrl"
                     accept=".xls,.xlsx" :beforeUpload="beforeUpload"
                     v-decorator="['plan',{rules: [{ required: true, message: '请上传执行计划！' }]}]">
             <a-button>
@@ -90,7 +90,8 @@
           //学期 1 2
           term: 1,
           year: '2019-2020'
-        }
+        },
+        fileUploadUrl: Api.postPlanFile
       }
     },
     methods: {
@@ -105,14 +106,15 @@
             console.log('Received values of form: ', values);
             //组装提交数据
             this.submitData.teachingDepartment = values.teaching_department;
-            this.submitData.educational_level = values.educational_level;
-            //TODO 解构
-            this.submitData.planFile = values.plan.file;
+            this.submitData.educationalLevel = values.educational_level;
+            this.submitData.fileId = values.plan.file.response.data.fileId;
             Post(Api.postPlan)
               .withSuccessCode(201)
               .withURLSearchParams(this.submitData)
               .do(response => {
-                console.log(response);
+                this.$message.success(response.data.msg, 2, () => {
+                  this.$router.push("/plan_list");
+                });
               })
           }
         });
@@ -187,6 +189,7 @@
        */
       initFormData() {
         Get(Api.getTeachingDepartments).do(response => {
+          console.log(response)
           this.formData.teaching_department = response.data.data;
         });
         Get(Api.getEducationalLevels).do(response => {
