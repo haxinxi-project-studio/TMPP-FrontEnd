@@ -7,7 +7,7 @@
         <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
       </a-select>
       <a-button class="m-l-2" @click="allPass">全部审核通过</a-button>
-      <a-button class="m-l-2" @click="exportData">{{exportBtnValue}}</a-button>
+      <a-button class="m-l-2" @click="exportData">导出采购教材汇总表</a-button>
       <a-table :columns="columns"
                :rowKey="record => record.id"
                :dataSource="data"
@@ -33,8 +33,8 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get, Post} from "../axios";
-  import Api from "../api"
+  import {Get, Post} from "../../axios";
+  import Api from "../../api"
   //表头
   const columns = [
     {
@@ -113,6 +113,13 @@
       fixed: 'right',
     },
     {
+      title: '购买样书',
+      key: 'buy',
+      width: 125,
+      fixed: 'right',
+      scopedSlots: {customRender: 'buy'}
+    },
+    {
       title: '操作',
       key: 'operation',
       fixed: 'right',
@@ -128,14 +135,12 @@
       return {
         titleInfo: {
           title: '我的审核',
-          subtitle: '填写购书信息表单',
+          subtitle: '对办公室主任审核通过的书籍进行审核',
         },
         //执行计划下拉框数据
         planList: [],
         //目前选择的执行计划ID
         nowSelectPlanId: '',
-        //导出表格按钮值
-        exportBtnValue: '',
         //表格展示数据
         data: [],
         pagination: {
@@ -181,82 +186,16 @@
       fetch(params = {}) {
         console.log('params:', params);
         this.loading = true;
-
-        const json = {
-          "code": 200,
-          "msg": "查询成功",
-          "data": {
-            "pageNum": 1,
-            "pageSize": 2,
-            "size": 5,
-            "orderBy": null,
-            "startRow": 1,
-            "endRow": 5,
-            "total": 11,
-            "pages": 3,
-            "list": [
-              {
-                "id": "1",
-                "courseCode": "B001",
-                "courseTitle": 1,
-                "isbn": "9789993700142",
-                "textbookName": "阿里技术参考图册",
-                "textbookCategory": "出版",
-                "press": "清华大学出版社",
-                "author": "某某",
-                "unitPrice": 15.00,
-                "teacherBookNumber": 1,
-                "discount": 0.76,
-                "awardInformation": "获奖信息",
-                "publicationDate": "2018-09",
-                "subscriber": "周老师",
-                "subscriberNumber": "17645532255",
-                "approvalStatus": "审核通过"
-              },
-              {
-                "id": "2",
-                "courseCode": "B001",
-                "courseTitle": 1,
-                "isbn": "9789993700142",
-                "textbookName": "阿里技术参考图册",
-                "textbookCategory": "出版",
-                "press": "清华大学出版社",
-                "author": "某某",
-                "unitPrice": 15.00,
-                "teacherBookNumber": 1,
-                "discount": 0.76,
-                "awardInformation": "获奖信息",
-                "publicationDate": "2018-09",
-                "subscriber": "周老师",
-                "subscriberNumber": "17645532255",
-                "approvalStatus": "审核通过"
-              }],
-            "prePage": 0,
-            "nextPage": 2,
-            "isFirstPage": true,
-            "isLastPage": false,
-            "hasPreviousPage": false,
-            "hasNextPage": true,
-            "navigatePages": 8,
-            "navigatepageNums": [
-              1,
-              2,
-              3
-            ],
-            "navigateFirstPage": 1,
-            "navigateLastPage": 3,
-            "firstPage": 1,
-            "lastPage": 3
-          }
-        };
-
-        const pagination = {...this.pagination};
-        // Read total count from server
-        // pagination.total = data.totalCount;
-        pagination.total = json.data.total;
-        this.loading = false;
-        this.data = json.data.list;
-        this.pagination = pagination;
+        Get(Api.getMyReview + '/' + this.nowSelectPlanId + '?page=1&size=50')
+          .do(response => {
+            const pagination = {...this.pagination};
+            pagination.total = response.data.data.total;
+            this.data = response.data.data.list;
+            this.pagination = pagination;
+          })
+          .doAfter(() => {
+            this.loading = false;
+          });
       },
       /**
        * 初始化执行计划下拉数据
@@ -269,6 +208,9 @@
               return data;
             });
             this.nowSelectPlanId = this.planList[0].id;
+          })
+          .doAfter(() => {
+            this.fetch();
           })
       },
       /**
@@ -286,8 +228,7 @@
        * 导出表格
        */
       exportData() {
-        //TODO 根据用户角色
-        //window.open()
+        window.open(Api.getExportPurchaseTeachingMaterialsSummaryTable);
       },
       /**
        * 教务处购买样书
@@ -303,25 +244,8 @@
       }
     },
     created() {
-      //TODO 根据用户角色判断显示
-      this.exportBtnValue = '导出征订教材计划统计表';
-      this.exportBtnValue = '导出采购教材汇总表';
-      let user = true;
-      //确保只添加一次
-      if (user && this.columns.filter(o => o.key === 'buy').length === 0) {
-        this.columns.splice(columns.length - 1, 0, {
-          title: '购买样书',
-          key: 'buy',
-          width: 125,
-          fixed: 'right',
-          scopedSlots: {customRender: 'buy'}
-        });
-      }
       this.initPlanList();
-    },
-    mounted() {
-      this.fetch();
-    },
+    }
   }
 </script>
 

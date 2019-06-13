@@ -14,12 +14,10 @@
             <a-icon type="plus"/>
             <span>新增计划</span>
           </a-menu-item>
-          <!--START：只有教务处与办公室主任才显示-->
           <a-menu-item key="review" @click="pushRouter('/review')">
             <a-icon type="profile"/>
             <span>我的审核</span>
           </a-menu-item>
-          <!--END：只有教务处与办公室主任才显示-->
           <a-menu-item key="plan_list" @click="pushRouter('/plan_list')">
             <a-icon type="align-left"/>
             <span>计划列表</span>
@@ -32,6 +30,12 @@
             <a-icon type="edit"/>
             <span>折扣管理</span>
           </a-menu-item>
+          <!--START：只有办公室主任角色才显示-->
+          <a-menu-item key="office_review" @click="pushRouter('/office_review')">
+            <a-icon type="profile"/>
+            <span>我的审核</span>
+          </a-menu-item>
+          <!--END：只有办公室主任角色才显示-->
           <!--START：只有教师角色才显示-->
           <a-menu-item key="buy" @click="pushRouter('/buy')">
             <a-icon type="profile"/>
@@ -97,8 +101,8 @@
     },
     created() {
       //根据当前Url路径选中菜单项
-      let path = location.pathname.replace(/[^a-zA-Z_]/g,'');
-      if (['new_plan', 'review', 'plan_list', 'export', 'discount', 'buy', 'add'].includes(path)) {
+      let path = location.pathname.replace(/[^a-zA-Z_]/g, '');
+      if (['new_plan', 'review', 'plan_list', 'export', 'discount', 'buy', 'add', 'office_review'].includes(path)) {
         this.selectedMenuKeys = [path];
       }
     }

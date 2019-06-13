@@ -48,7 +48,12 @@ let router = new Router({
         {
             path: '/review',
             name: 'review',
-            component: () => import(/* webpackChunkName: "review" */ './views/Review.vue')
+            component: () => import(/* webpackChunkName: "review" */ './views/aao/Review.vue')
+        },
+        {
+            path: '/office_review',
+            name: 'officeReview',
+            component: () => import(/* webpackChunkName: "officeReview" */ './views/om/Review.vue')
         },
         {
             path: "*",
