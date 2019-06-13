@@ -9,39 +9,40 @@
         <div class="logo-box">
           <img class="logo" :src="`${publicPath}logo.png`" alt="logo img"/>
         </div>
-        <a-menu theme="dark" mode="inline" :defaultSelectedKeys="selectedMenuKeys">
-          <a-menu-item key="new_plan" @click="pushRouter('/new_plan')">
+        <a-menu theme="dark" mode="inline" v-model="getNowPath">
+          <a-menu-item key="new_plan" @click="pushRouter('/new_plan')" v-if="this.$user.user_is_aao">
             <a-icon type="plus"/>
             <span>新增计划</span>
           </a-menu-item>
-          <a-menu-item key="review" @click="pushRouter('/review')">
+          <a-menu-item key="review" @click="pushRouter('/review')" v-if="this.$user.user_is_aao">
             <a-icon type="profile"/>
             <span>我的审核</span>
           </a-menu-item>
-          <a-menu-item key="plan_list" @click="pushRouter('/plan_list')">
+          <a-menu-item key="plan_list" @click="pushRouter('/plan_list')" v-if="this.$user.user_is_aao">
             <a-icon type="align-left"/>
             <span>计划列表</span>
           </a-menu-item>
-          <a-menu-item key="export" @click="pushRouter('/export')">
+          <a-menu-item key="export" @click="pushRouter('/export')" v-if="this.$user.user_is_aao">
             <a-icon type="download"/>
             <span>导出表格</span>
           </a-menu-item>
-          <a-menu-item key="discount" @click="pushRouter('/discount')">
+          <a-menu-item key="discount" @click="pushRouter('/discount')" v-if="this.$user.user_is_aao">
             <a-icon type="edit"/>
             <span>折扣管理</span>
           </a-menu-item>
           <!--START：只有办公室主任角色才显示-->
-          <a-menu-item key="office_review" @click="pushRouter('/office_review')">
+          <a-menu-item key="office_review" @click="pushRouter('/office_review')"
+                       v-if="this.$user.user_is_office_manager">
             <a-icon type="profile"/>
             <span>我的审核</span>
           </a-menu-item>
           <!--END：只有办公室主任角色才显示-->
           <!--START：只有教师角色才显示-->
-          <a-menu-item key="buy" @click="pushRouter('/buy')">
+          <a-menu-item key="buy" @click="pushRouter('/buy')" v-if="this.$user.user_is_teacher">
             <a-icon type="profile"/>
             <span>我的购书</span>
           </a-menu-item>
-          <a-menu-item key="add" @click="pushRouter('/add')">
+          <a-menu-item key="add" @click="pushRouter('/add')" v-if="this.$user.user_is_teacher">
             <a-icon type="edit"/>
             <span>填写购书信息</span>
           </a-menu-item>
@@ -87,10 +88,13 @@
       //关闭菜单栏
       collapsed: false,
       //登录用户
-      loginUser: "教务处：舒露",
-      //默认选中
-      selectedMenuKeys: ['plan_list']
+      loginUser: '',
     }),
+    computed: {
+      getNowPath() {
+        return [this.$store.state.now_path.replace(/[^a-zA-Z_]/g, '')];
+      }
+    },
     methods: {
       /**
        * 更改路由
@@ -107,11 +111,7 @@
       }
     },
     created() {
-      //根据当前Url路径选中菜单项
-      let path = location.pathname.replace(/[^a-zA-Z_]/g, '');
-      if (['new_plan', 'review', 'plan_list', 'export', 'discount', 'buy', 'add', 'office_review'].includes(path)) {
-        this.selectedMenuKeys = [path];
-      }
+      this.loginUser = this.$user.userTypeName() + '：' + this.$user.loginName;
     }
   }
 </script>

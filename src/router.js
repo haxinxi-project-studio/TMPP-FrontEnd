@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Vuex from './store'
 
 Vue.use(Router)
 
@@ -8,16 +9,12 @@ let router = new Router({
     base: process.env.BASE_URL,
     routes: [
         {
-            //TODO 根据角色重定向路径
             path: '/',
             redirect: '/plan_list'
         },
         {
             path: '/plan_list',
             name: 'planList',
-            // route level code-splitting
-            // this generates a separate chunk (about.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
             component: () => import(/* webpackChunkName: "planList" */ './views/aao/PlanList.vue')
         },
         {
@@ -56,11 +53,62 @@ let router = new Router({
             component: () => import(/* webpackChunkName: "officeReview" */ './views/om/Review.vue')
         },
         {
+            path: '/token/:id',
+            name: 'token',
+            component: () => import(/* webpackChunkName: "planList" */ './views/aao/PlanList.vue'),
+            beforeEnter: (to, from, next) => {
+                window.localStorage.setItem('authorization_token', to.params.id);
+                window.location.href = window.location.protocol + '//' + window.location.host;
+                next(false);
+            }
+        },
+        {
             path: "*",
             redirect: "/"
         }
     ]
 });
+//T 教师  A 教务处  O 办公室主任
+const A = ['plan_list', 'new_plan', 'export', 'discount', 'review'];
+const O = ['office_review'];
+const T = ['buy', 'add'];
+
+/**
+ * 检查用户是否有当前路由权限
+ * @param path 路径
+ * @returns {boolean} 是否有权限
+ */
+function havePermission(path) {
+    const p = path.replace(/[^a-zA-Z_]/g, '');
+    switch (Vue.prototype.$user.loginUser.userType) {
+        //教务处
+        case 'A':
+            return A.includes(p);
+        //办公室主任
+        case 'O':
+            return O.includes(p);
+        //教师
+        case 'T':
+            return T.includes(p);
+    }
+}
+
+/***
+ * 跳转到用户正确的路径
+ * @param next 路由回调
+ */
+function route2TruePath(next) {
+    if (Vue.prototype.$user.user_is_office_manager) {
+        next('/office_review');
+    } else if (Vue.prototype.$user.user_is_teacher) {
+        next('/buy');
+    } else if (Vue.prototype.$user.user_is_aao) {
+        next('/plan_list');
+    } else {
+        next(false);
+    }
+}
+
 /**
  * 路由全局守卫
  * 1.如果Url以'/token'开头，放行
@@ -71,6 +119,10 @@ router.beforeEach((to, from, next) => {
         next();
         return;
     }
+    if (!havePermission(to.path)) {
+        route2TruePath(next);
+        return;
+    }
     let path = window.localStorage.getItem('last_path');
     if (path !== null) {
         window.localStorage.removeItem('last_path');
@@ -78,6 +130,10 @@ router.beforeEach((to, from, next) => {
     } else {
         next();
     }
+});
+
+router.afterEach((to, from) => {
+    Vuex.state.now_path = to.path;
 });
 
 export default router;
