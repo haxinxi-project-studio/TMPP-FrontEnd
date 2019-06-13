@@ -131,7 +131,9 @@ router.beforeEach((to, from, next) => {
         next();
     }
 });
-
+/***
+ * 全局后置钩子
+ */
 router.afterEach((to, from) => {
     Vuex.state.now_path = to.path;
 });

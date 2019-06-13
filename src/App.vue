@@ -9,7 +9,7 @@
         <div class="logo-box">
           <img class="logo" :src="`${publicPath}logo.png`" alt="logo img"/>
         </div>
-        <a-menu theme="dark" mode="inline" v-model="getNowPath">
+        <a-menu theme="dark" mode="inline" v-model="selectedMenuKeys">
           <a-menu-item key="new_plan" @click="pushRouter('/new_plan')" v-if="this.$user.user_is_aao">
             <a-icon type="plus"/>
             <span>新增计划</span>
@@ -89,12 +89,9 @@
       collapsed: false,
       //登录用户
       loginUser: '',
+      //当前选中菜单
+      selectedMenuKeys: ['plan_list'],
     }),
-    computed: {
-      getNowPath() {
-        return [this.$store.state.now_path.replace(/[^a-zA-Z_]/g, '')];
-      }
-    },
     methods: {
       /**
        * 更改路由
@@ -111,6 +108,9 @@
       }
     },
     created() {
+      this.$store.watch((state, getters) => state.now_path, (value, oldValue) => {
+        this.selectedMenuKeys = [value.replace(/[^a-zA-Z_]/g, '')];
+      });
       this.loginUser = this.$user.userTypeName() + '：' + this.$user.loginName;
     }
   }
