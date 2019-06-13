@@ -4,25 +4,16 @@
     <div class="content-style">
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-select v-decorator="['plan',{rules: [{ required: true, message: '请选择执行计划！' }]}]"
-                    placeholder="选择执行计划">
-            <a-select-option value="male">
-              male
-            </a-select-option>
-            <a-select-option value="female">
-              female
-            </a-select-option>
+          <a-select v-model="nowSelectPlanId" @change="handlePlanChange" placeholder="选择执行计划">
+            <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
           </a-select>
           <a href="">下载该执行计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['course_name',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
                     placeholder="选择课程名称">
-            <a-select-option value="male">
-              male
-            </a-select-option>
-            <a-select-option value="female">
-              female
+            <a-select-option v-for="courseTitle in courseTitleList" :value="courseTitle.id">
+              {{courseTitle.courseCode+'-'+courseTitle.courseTitle}}
             </a-select-option>
           </a-select>
         </a-form-item>
@@ -102,6 +93,8 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
+  import {Get} from "../../axios";
+  import Api from "../../api";
 
   export default {
     name: "Add",
@@ -114,7 +107,15 @@
           subtitle: '填写购书信息表单',
         },
         //购买图书
-        isBuyBook: true
+        isBuyBook: true,
+        //执行计划下拉框数据
+        planList: [],
+        //目前选择的执行计划ID
+        nowSelectPlanId: '',
+        //课程名称下拉框数据
+        courseTitleList: [],
+        //目前选择的课程名称ID
+        nowCourseTitleId: '',
       };
     },
     methods: {
@@ -136,8 +137,34 @@
        */
       handleByBookRadio(e) {
         this.isBuyBook = e.target.value;
+      },
+      initData() {
+        Get(Api.getUndonePlan)
+          .do(response => {
+            this.planList = response.data.data.map(data => {
+              data.name = data.year + ' 第' + data.term + '学期 ' + data.educationalLevel + ' ' + data.teachingDepartment;
+              return data;
+            });
+            this.nowSelectPlanId = this.planList[0].id;
+          })
+          .doAfter(() => {
+            this.initCourseTitles(this.nowSelectPlanId);
+          })
+      },
+      initCourseTitles(planId) {
+        Get(Api.getCourseTitles + '/' + planId)
+          .do(response => {
+            this.courseTitleList = response.data.data;
+            this.nowCourseTitleId = this.courseTitleList[0].id
+          })
+      },
+      handlePlanChange(id) {
+        this.initCourseTitles(id);
       }
     },
+    created() {
+      this.initData();
+    }
   }
 </script>
 

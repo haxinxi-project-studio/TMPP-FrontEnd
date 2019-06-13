@@ -3,9 +3,8 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       执行计划：
-      <a-select defaultValue="lucy" style="width: 320px;margin-bottom: 15px">
-        <a-select-option value="jack">2018-2019 第一学期 本科 软件学院</a-select-option>
-        <a-select-option value="lucy">2018-2019 第一学期 本科 软件学院</a-select-option>
+      <a-select v-model="nowSelectPlanId" style="width: 320px;margin-bottom: 15px">
+        <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
       </a-select>
       <a-table :columns="columns"
                :rowKey="record => record.id"
@@ -31,6 +30,8 @@
 <script>
   import ContentTitle from "@/components/ContentTitle";
   import TeacherModifyBookModal from "@/components/TeacherModifyBookModal";
+  import {Get} from "../../axios";
+  import Api from "../../api";
   //表头
   const columns = [
     {
@@ -132,6 +133,10 @@
         editObj: {},
         //表格展示数据
         data: [],
+        //执行计划下拉框数据
+        planList: [],
+        //目前选择的执行计划ID
+        nowSelectPlanId: '',
         pagination: {
           //是否可以快速跳转至某页
           showQuickJumper: true,
@@ -162,83 +167,16 @@
       },
       fetch(params = {}) {
         console.log('params:', params);
-        this.loading = true;
-
-        const json = {
-          "code": 200,
-          "msg": "查询成功",
-          "data": {
-            "pageNum": 1,
-            "pageSize": 2,
-            "size": 5,
-            "orderBy": null,
-            "startRow": 1,
-            "endRow": 5,
-            "total": 11,
-            "pages": 3,
-            "list": [
-              {
-                "id": "1",
-                "courseCode": "B001",
-                "courseTitle": 1,
-                "isbn": "9789993700142",
-                "textbookName": "阿里技术参考图册",
-                "textbookCategory": "出版",
-                "press": "清华大学出版社",
-                "author": "某某",
-                "unitPrice": 15.00,
-                "teacherBookNumber": 1,
-                "discount": 0.76,
-                "awardInformation": "获奖信息",
-                "publicationDate": "2018-09",
-                "subscriber": "周老师",
-                "subscriberNumber": "13333333333",
-                "approvalStatus": "审核通过"
-              },
-              {
-                "id": "2",
-                "courseCode": "B001",
-                "courseTitle": 1,
-                "isbn": "9789993700142",
-                "textbookName": "阿里技术参考图册",
-                "textbookCategory": "出版",
-                "press": "清华大学出版社",
-                "author": "某某",
-                "unitPrice": 15.00,
-                "teacherBookNumber": 1,
-                "discount": 0.76,
-                "awardInformation": "获奖信息",
-                "publicationDate": "2018-09",
-                "subscriber": "周老师",
-                "subscriberNumber": "13333333333",
-                "approvalStatus": "审核通过"
-              }],
-            "prePage": 0,
-            "nextPage": 2,
-            "isFirstPage": true,
-            "isLastPage": false,
-            "hasPreviousPage": false,
-            "hasNextPage": true,
-            "navigatePages": 8,
-            "navigatepageNums": [
-              1,
-              2,
-              3
-            ],
-            "navigateFirstPage": 1,
-            "navigateLastPage": 3,
-            "firstPage": 1,
-            "lastPage": 3
-          }
-        };
-
-        const pagination = {...this.pagination};
-        // Read total count from server
-        // pagination.total = data.totalCount;
-        pagination.total = json.data.total;
-        this.loading = false;
-        this.data = json.data.list;
-        this.pagination = pagination;
+        Get(Api.getPurchaseBook + '/' + this.nowSelectPlanId + '?page=1&size=50')
+          .do(response => {
+            const pagination = {...this.pagination};
+            // Read total count from server
+            // pagination.total = data.totalCount;
+            pagination.total = response.data.data.total;
+            this.loading = false;
+            this.data = response.data.data.list;
+            this.pagination = pagination;
+          });
       },
       /**
        * 处理修改按钮
@@ -254,11 +192,25 @@
        */
       handleModalCancel(e) {
         this.editObj = {};
+      },
+      initData() {
+        this.loading = true;
+        Get(Api.getUndonePlan)
+          .do(response => {
+            this.planList = response.data.data.map(data => {
+              data.name = data.year + ' 第' + data.term + '学期 ' + data.educationalLevel + ' ' + data.teachingDepartment;
+              return data;
+            });
+            this.nowSelectPlanId = this.planList[0].id;
+          })
+          .doAfter(() => {
+            this.fetch();
+          })
       }
     },
-    mounted() {
-      this.fetch();
-    },
+    created() {
+      this.initData();
+    }
   }
 </script>
 

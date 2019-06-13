@@ -271,5 +271,164 @@
       "firstPage": 1,
       "lastPage": 3
     }
+  },
+  "director_review": {
+    "办公室主任我的审核": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": {
+      "pageNum": 1,
+      "pageSize": 2,
+      "size": 5,
+      "orderBy": null,
+      "startRow": 1,
+      "endRow": 5,
+      "total": 11,
+      "pages": 3,
+      "list": [
+        {
+          "id": "1",
+          "courseCode": "B001",
+          "courseTitle": 1,
+          "isBookPurchase": 0,
+          "isbn": "9789993700142",
+          "textbookName": "阿里技术参考图册",
+          "textbookCategory": "出版",
+          "press": "清华大学出版社",
+          "author": "某某",
+          "unitPrice": 15.00,
+          "teacherBookNumber": 1,
+          "discount": 0.76,
+          "awardInformation": "获奖信息",
+          "publicationDate": "2018-09",
+          "subscriber": "周老师",
+          "subscriberNumber": "13333333333",
+          "approvalStatus": "审核通过"
+        },
+        {
+          "id": "2",
+          "courseCode": "B001",
+          "courseTitle": 1,
+          "isBookPurchase": 0,
+          "isbn": "9789993700142",
+          "textbookName": "阿里技术参考图册",
+          "textbookCategory": "出版",
+          "press": "清华大学出版社",
+          "author": "某某",
+          "unitPrice": 15.00,
+          "teacherBookNumber": 1,
+          "discount": 0.76,
+          "awardInformation": "获奖信息",
+          "publicationDate": "2018-09",
+          "subscriber": "周老师",
+          "subscriberNumber": "13333333333",
+          "approvalStatus": "审核通过"
+        }
+      ],
+      "prePage": 0,
+      "nextPage": 2,
+      "isFirstPage": true,
+      "isLastPage": false,
+      "hasPreviousPage": false,
+      "hasNextPage": true,
+      "navigatePages": 8,
+      "navigatepageNums": [
+        1,
+        2,
+        3
+      ],
+      "navigateFirstPage": 1,
+      "navigateLastPage": 3,
+      "firstPage": 1,
+      "lastPage": 3
+    }
+  },
+  "purchase_book": {
+    "我的购书": 1,
+    "code": 200,
+    "msg": "查询成功",
+    "data": {
+      "pageNum": 1,
+      "pageSize": 2,
+      "size": 5,
+      "orderBy": null,
+      "startRow": 1,
+      "endRow": 5,
+      "total": 11,
+      "pages": 3,
+      "list": [
+        {
+          "id": "1",
+          "courseCode": "B001",
+          "courseTitle": 1,
+          "isBookPurchase": 0,
+          "isbn": "9789993700142",
+          "textbookName": "阿里技术参考图册",
+          "textbookCategory": "出版",
+          "press": "清华大学出版社",
+          "author": "某某",
+          "unitPrice": 15.00,
+          "teacherBookNumber": 1,
+          "discount": 0.76,
+          "awardInformation": "获奖信息",
+          "publicationDate": "2018-09",
+          "subscriber": "周老师",
+          "subscriberNumber": "13333333333",
+          "approvalStatus": "审核通过"
+        },
+        {
+          "id": "2",
+          "courseCode": "B001",
+          "courseTitle": 1,
+          "isBookPurchase": 0,
+          "isbn": "9789993700142",
+          "textbookName": "阿里技术参考图册",
+          "textbookCategory": "出版",
+          "press": "清华大学出版社",
+          "author": "某某",
+          "unitPrice": 15.00,
+          "teacherBookNumber": 1,
+          "discount": 0.76,
+          "awardInformation": "获奖信息",
+          "publicationDate": "2018-09",
+          "subscriber": "周老师",
+          "subscriberNumber": "13333333333",
+          "approvalStatus": "审核通过"
+        }
+      ],
+      "prePage": 0,
+      "nextPage": 2,
+      "isFirstPage": true,
+      "isLastPage": false,
+      "hasPreviousPage": false,
+      "hasNextPage": true,
+      "navigatePages": 8,
+      "navigatepageNums": [
+        1,
+        2,
+        3
+      ],
+      "navigateFirstPage": 1,
+      "navigateLastPage": 3,
+      "firstPage": 1,
+      "lastPage": 3
+    }
+  },
+  "courseTitles": {
+    "获取课程名称": 1,
+    "code": 200,
+    "msg": "获取课程名称成功",
+    "data": [
+      {
+        "id": "1",
+        "courseCode": "B001",
+        "courseTitle": 1
+      },
+      {
+        "id": "2",
+        "courseCode": "B001",
+        "courseTitle": 1
+      }
+    ]
   }
 }
