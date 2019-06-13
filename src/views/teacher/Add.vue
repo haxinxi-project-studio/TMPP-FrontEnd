@@ -48,13 +48,8 @@
                             v-decorator="['price',{rules: [{ required: true, message: '请输入价格!' }]}]"/>
           </a-form-item>
           <a-form-item label="折扣：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-select v-decorator="['discountId',{rules: [{ required: true, message: '请选择折扣！' }]}]"
-                      placeholder="选择折扣">
-              <a-select-option value="male">
-                1
-              </a-select-option>
-              <a-select-option value="female">
-                0.7
+            <a-select v-model="nowSelectDiscountId">
+              <a-select-option v-for="discount in discountList" :value="discount.id">{{discount.discount}}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -115,7 +110,11 @@
         //课程名称下拉框数据
         courseTitleList: [],
         //目前选择的课程名称ID
-        nowCourseTitleId: '',
+        nowSelectCourseTitleId: '',
+        //折扣下拉框数据
+        discountList: [],
+        //目前选择的折扣ID
+        nowSelectDiscountId: '',
       };
     },
     methods: {
@@ -149,13 +148,18 @@
           })
           .doAfter(() => {
             this.initCourseTitles(this.nowSelectPlanId);
+          });
+        Get(Api.getDiscounts)
+          .do(response => {
+            this.discountList = response.data.data;
+            this.nowSelectDiscountId = this.discountList[0].id;
           })
       },
       initCourseTitles(planId) {
         Get(Api.getCourseTitles + '/' + planId)
           .do(response => {
             this.courseTitleList = response.data.data;
-            this.nowCourseTitleId = this.courseTitleList[0].id
+            this.nowSelectCourseTitleId = this.courseTitleList[0].id
           })
       },
       handlePlanChange(id) {
