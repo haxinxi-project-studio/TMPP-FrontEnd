@@ -152,6 +152,12 @@
       };
     },
     methods: {
+      /**
+       *
+       * @param pagination
+       * @param filters
+       * @param sorter
+       */
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
         const pager = {...this.pagination};
@@ -165,6 +171,10 @@
           ...filters,
         });
       },
+      /**
+       *
+       * @param params
+       */
       fetch(params = {}) {
         console.log('params:', params);
         Get(Api.getPurchaseBook + '/' + this.nowSelectPlanId + '?page=1&size=50')
@@ -193,6 +203,9 @@
       handleModalCancel(e) {
         this.editObj = {};
       },
+      /**
+       * 初始化数据
+       */
       initData() {
         this.loading = true;
         Get(Api.getUndonePlan)

@@ -147,6 +147,7 @@
     methods: {
       /**
        * 驳回处理
+       * @param obj 某条书籍
        */
       handleRejectBook(obj) {
         console.log(obj);
@@ -157,6 +158,12 @@
             console.log(response);
           })
       },
+      /**
+       *
+       * @param pagination
+       * @param filters
+       * @param sorter
+       */
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
         const pager = {...this.pagination};
@@ -170,6 +177,10 @@
           ...filters,
         });
       },
+      /**
+       *
+       * @param params
+       */
       fetch(params = {}) {
         console.log('params:', params);
         this.loading = true;

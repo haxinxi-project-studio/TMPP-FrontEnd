@@ -62,7 +62,7 @@
             </a>
             <a-menu slot="overlay">
               <a-menu-item>
-                <a href="javascript:;">注销登录</a>
+                <a @click="logout">注销登录</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -77,6 +77,7 @@
 
 <script>
   import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN';
+  import {CAS_LOGOUT_URL} from "./api"
 
   export default {
     name: 'App',
@@ -98,6 +99,12 @@
       pushRouter(path) {
         this.$router.push(path);
       },
+      /**
+       * 注销登录
+       */
+      logout() {
+        window.location.href = CAS_LOGOUT_URL;
+      }
     },
     created() {
       //根据当前Url路径选中菜单项

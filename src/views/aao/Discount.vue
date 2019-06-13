@@ -71,6 +71,12 @@
       };
     },
     methods: {
+      /**
+       *
+       * @param value
+       * @param key
+       * @param column
+       */
       handleChange(value, key, column) {
         const newData = [...this.discountData];
         const target = newData.filter(item => key === item.id)[0];
@@ -79,6 +85,10 @@
           this.discountData = newData
         }
       },
+      /**
+       *
+       * @param key
+       */
       edit(key) {
         const newData = [...this.discountData];
         const target = newData.filter(item => key === item.id)[0];
@@ -87,6 +97,10 @@
           this.discountData = newData
         }
       },
+      /**
+       *
+       * @param key
+       */
       del(key) {
         console.log(key);
         Del(Api.deleteDiscount + '?id=' + key)
@@ -95,6 +109,10 @@
             console.log(response);
           })
       },
+      /**
+       *
+       * @param key
+       */
       save(key) {
         const newData = [...this.discountData];
         const target = newData.filter(item => key === item.id)[0];
@@ -105,6 +123,10 @@
 
         }
       },
+      /**
+       *
+       * @param key
+       */
       cancel(key) {
         const newData = [...this.discountData];
         const target = newData.filter(item => key === item.id)[0];
@@ -114,6 +136,9 @@
           this.discountData = newData
         }
       },
+      /**
+       * 初始化数据
+       */
       initData() {
         Get(Api.getDiscounts)
           .do(response => {

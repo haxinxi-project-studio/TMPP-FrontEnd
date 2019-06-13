@@ -159,6 +159,9 @@
       handleByBookRadio(e) {
         this.isBuyBook = e.target.value;
       },
+      /**
+       * 初始化数据
+       */
       initData() {
         Get(Api.getUndonePlan)
           .do(response => {
@@ -177,6 +180,10 @@
             this.nowSelectDiscountId = this.discountList[0].id;
           })
       },
+      /**
+       * 初始化课程名称数据
+       * @param planId 执行计划ID
+       */
       initCourseTitles(planId) {
         Get(Api.getCourseTitles + '/' + planId)
           .do(response => {
@@ -184,9 +191,18 @@
             this.nowSelectCourseTitleId = this.courseTitleList[0].id
           })
       },
+      /**
+       * 处理执行计划下拉改变
+       * @param id 执行计划ID
+       */
       handlePlanChange(id) {
         this.initCourseTitles(id);
       },
+      /**
+       * 处理出版日期更新
+       * @param date {moment}
+       * @param dateString 日期
+       */
       handlePublicationDateChange(date, dateString) {
         this.submitForm.publicationDate = dateString;
       },
