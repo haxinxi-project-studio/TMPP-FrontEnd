@@ -153,7 +153,16 @@ _request.prototype.do = function (fn) {
             promise = instance.get(this.url);
             break;
         case Method.DELETE:
-            promise = instance.delete(this.url);
+            if (this.urlSearchParams !== undefined) {
+                promise = instance.delete(this.url, {data: this.urlSearchParams});
+            } else if (this.formData !== undefined) {
+                promise = instance.delete(this.url, {
+                    data: this.formData,
+                    headers: {'content-type': 'multipart/form-data'}
+                });
+            } else {
+                promise = instance.delete(this.url);
+            }
             break;
         case Method.POST:
             if (this.urlSearchParams !== undefined) {
