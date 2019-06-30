@@ -2,7 +2,12 @@
   <div>
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
-      <a-table :columns="columns" :dataSource="discountData" :rowKey="record => record.id" :pagination="pagination"
+      <a-button type="primary" style="margin-bottom: 20px" @click="visible=true">新增折扣</a-button>
+      <a-modal title="新增折扣" :visible="visible" @ok="newDiscount" @cancel="visible=false"
+               :confirmLoading="confirmLoading">
+        <a-input-number :min="0" :max="1" :step="0.01" :defaultValue="discount" @change="onNewDiscountChange"/>
+      </a-modal>
+      <a-table :columns="columns" :dataSource="discountData" :rowKey="record => record.id" :pagination="false"
                bordered>
         <template slot="discount" slot-scope="text, record, index">
           <div key="discount">
@@ -30,7 +35,7 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Del, Get} from "../../axios";
+  import {Del, Get, Patch, Post} from "../../axios";
   import Api from "../../api";
 
   const columns = [
@@ -58,21 +63,14 @@
         },
         discountData: [],
         columns,
-        pagination: {
-          //是否可以快速跳转至某页
-          showQuickJumper: true,
-          //是否可以改变 pageSize
-          showSizeChanger: true,
-          //默认的每页条数
-          defaultPageSize: 50,
-          //分页下拉框数据
-          pageSizeOptions: ['10', '30', '50', '70', '100']
-        }
+        visible: false,
+        confirmLoading: false,
+        discount: 1
       };
     },
     methods: {
       /**
-       *
+       * 处理更改
        * @param value
        * @param key
        * @param column
@@ -86,7 +84,7 @@
         }
       },
       /**
-       *
+       * 修改
        * @param key
        */
       edit(key) {
@@ -98,19 +96,20 @@
         }
       },
       /**
-       *
+       * 删除
        * @param key
        */
       del(key) {
-        console.log(key);
         Del(Api.deleteDiscount + '?id=' + key)
+          .withErrorStartMsg("删除失败：")
           .withSuccessCode(204)
           .do(response => {
-            console.log(response);
+            this.$message.success('删除成功');
+            this.initData();
           })
       },
       /**
-       *
+       * 修改折扣
        * @param key
        */
       save(key) {
@@ -120,11 +119,17 @@
           delete target.editable;
           this.discountData = newData;
           this.cacheData = newData.map(item => ({...item}));
-
+          Patch(Api.patchDiscount)
+            .withSuccessCode(204)
+            .withErrorStartMsg("修改失败：")
+            .withURLSearchParams({id: target.id, discount: target.discount})
+            .do(response => {
+              this.$message.success('修改成功');
+            })
         }
       },
       /**
-       *
+       * 取消
        * @param key
        */
       cancel(key) {
@@ -142,8 +147,32 @@
       initData() {
         Get(Api.getDiscounts)
           .do(response => {
-            console.log(response.data.data);
             this.discountData = response.data.data;
+          })
+      },
+      /**
+       * 新增折扣输入框值改变
+       * @param discount 折扣数
+       */
+      onNewDiscountChange(discount) {
+        this.discount = discount;
+      },
+      /**
+       * 保存新的折扣
+       */
+      newDiscount() {
+        this.confirmLoading = true;
+        Post(Api.postDiscount)
+          .withSuccessCode(201)
+          .withErrorStartMsg("保存失败：")
+          .withURLSearchParams({discount: this.discount})
+          .do(response => {
+            this.$message.success('保存成功');
+            this.initData();
+          })
+          .doAfter(() => {
+            this.visible = false;
+            this.confirmLoading = false;
           })
       }
     },
