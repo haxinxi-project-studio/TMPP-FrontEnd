@@ -13,9 +13,9 @@
                           @change="handleEndNumberChange"/>
         </a-form-item>
         <a-form-item label="学期：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-radio-group :defaultValue="1" v-model="submitData.term">
-            <a-radio :value="1">第一学期</a-radio>
-            <a-radio :value="2">第二学期</a-radio>
+          <a-radio-group :defaultValue="0" v-model="submitData.term">
+            <a-radio :value="0">第一学期</a-radio>
+            <a-radio :value="1">第二学期</a-radio>
           </a-radio-group>
         </a-form-item>
         <a-form-item label="授课部门：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
@@ -90,8 +90,8 @@
         },
         //表单提交数据
         submitData: {
-          //学期 1 2
-          term: 1,
+          //学期 0 1
+          term: 0,
           year: '2019-2020',
           fileId: null
         }
@@ -196,7 +196,6 @@
        */
       initFormData() {
         Get(Api.getTeachingDepartments).do(response => {
-          console.log(response)
           this.formData.teaching_department = response.data.data;
         });
         Get(Api.getEducationalLevels).do(response => {

@@ -18,7 +18,7 @@
                class="table-box"
       >
         <template slot="action" slot-scope="text">
-          <a href="">删除</a>&nbsp;
+          <a v-if="text.status==='未完成'" @click="del(text.id)">删除</a>&nbsp;
           <a @click="down(text)">下载执行计划</a>
         </template>
       </a-table>
@@ -28,7 +28,7 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Download, Get} from "../../axios";
+  import {Del, Download, Get} from "../../axios";
   import Api from "../../api";
   import dayjs from 'dayjs'
 
@@ -120,10 +120,9 @@
       /**
        * 表数据
        */
-      fetch(params = {}) {
-        console.log('params:', params);
+      fetch(params = {page: 1, results: 50}) {
         this.loading = true;
-        Get(Api.getPlans)
+        Get(Api.getPlans + '/?page=' + params.page + '&size=' + params.results)
           .do(response => {
             const pagination = {...this.pagination};
             // Read total count from server
@@ -171,6 +170,18 @@
           }
           return data.year + data.term + data.level + data.department + '执行计划' + ext
         });
+      },
+      /**
+       * 删除执行计划
+       * @param id
+       */
+      del(id) {
+        Del(Api.deletePlans + "?id=" + id)
+          .withErrorStartMsg("删除失败：")
+          .withSuccessCode(204)
+          .do(response => {
+            this.fetch();
+          })
       }
     },
     mounted() {
