@@ -98,6 +98,24 @@ export function Patch(url) {
     return new _request(url, Method.PATCH);
 }
 
+export function Download(url, fileName) {
+    instance.get(url, {
+        responseType: 'blob' //指定返回数据的格式为blob
+    }).then(response => {
+        let url = window.URL.createObjectURL(response.data);
+        let a = document.createElement("a");
+        document.body.appendChild(a);
+        a.href = url;
+        a.download = fileName(response.headers);
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }).catch(error => {
+        if (error.response !== undefined) {
+            showErrorToast("下载失败：", error.response.data.msg);
+        }
+    });
+}
+
 function _request(url, method) {
     this.method = method;
     this.url = url;

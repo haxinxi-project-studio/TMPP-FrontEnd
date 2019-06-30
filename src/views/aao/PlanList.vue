@@ -19,7 +19,7 @@
       >
         <template slot="action" slot-scope="text">
           <a href="">删除</a>&nbsp;
-          <a href="">下载执行计划</a>
+          <a @click="down(text)">下载执行计划</a>
         </template>
       </a-table>
     </div>
@@ -28,8 +28,9 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get} from "../../axios";
+  import {Download, Get} from "../../axios";
   import Api from "../../api";
+  import dayjs from 'dayjs'
 
   //表头
   const columns = [
@@ -43,15 +44,15 @@
     },
     {
       title: '授课部门',
-      dataIndex: 'teachingDepartment'
+      dataIndex: 'department'
     },
     {
       title: '教育层次',
-      dataIndex: 'educationalLevel'
+      dataIndex: 'level'
     },
     {
       title: '计划创建时间',
-      dataIndex: 'startTime'
+      dataIndex: 'gmtCreate'
     },
     {
       title: '计划完成时间',
@@ -59,7 +60,7 @@
     },
     {
       title: '状态',
-      dataIndex: 'approvalStatus'
+      dataIndex: 'status'
     },
     {
       title: '操作',
@@ -128,7 +129,12 @@
             // Read total count from server
             // pagination.total = data.totalCount;
             pagination.total = response.data.data.total;
-            this.data = response.data.data.list;
+            this.data = response.data.data.list.map(m => {
+              m.term = m.term ? "第二学期" : "第一学期";
+              m.status = m.status ? "完成" : "未完成";
+              m.gmtCreate = dayjs(m.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+              return m;
+            });
             this.pagination = pagination;
             this.noneFilterData = this.data;
           })
@@ -146,12 +152,25 @@
             this.data = this.noneFilterData;
             break;
           case 'processing':
-            this.data = this.noneFilterData.filter(d => d.approvalStatus === '进行中');
+            this.data = this.noneFilterData.filter(d => d.status === '未完成');
             break;
           case 'done':
-            this.data = this.noneFilterData.filter(d => d.approvalStatus === '已完成');
+            this.data = this.noneFilterData.filter(d => d.status === '完成');
             break;
         }
+      },
+      /**
+       * 下载执行计划
+       * @param data 执行计划
+       */
+      down(data) {
+        Download(Api.getDownPlan + '/?id=' + data.id, headers => {
+          let ext = '.xlsx';
+          if (headers['content-type'] === "application/vnd.ms-excel") {
+            ext = '.xls';
+          }
+          return data.year + data.term + data.level + data.department + '执行计划' + ext
+        });
       }
     },
     mounted() {

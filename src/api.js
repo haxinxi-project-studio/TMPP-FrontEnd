@@ -6,7 +6,7 @@
 */
 'use strict';
 //API地址
-export const BASE_URL = "http://localhost:8080";
+export const BASE_URL = "http://itning:8080";
 //登录接口
 export const CAS_LOGIN_URL = BASE_URL + "/login";
 //注销接口
@@ -16,19 +16,19 @@ export const CAS_LOGOUT_URL = BASE_URL + "/logout";
 
 export default {
     //获取未完成执行计划
-    getUndonePlan: BASE_URL + '/undone_plan',
+    getUndonePlan: BASE_URL + '/undone_execute_plan',
     //下载执行计划
-    getDownPlan: BASE_URL + '/down_plan',
+    getDownPlan: BASE_URL + '/down_execute_plan',
     //获取所有授课部门
     getTeachingDepartments: BASE_URL + '/teaching_departments',
     //获取教育层次
     getEducationalLevels: BASE_URL + '/educational_levels',
     //下载执行计划模板
-    getDownloadPlanTemplate: BASE_URL + '/download_plan_template',
+    getDownloadPlanTemplate: BASE_URL + '/download_execute_plan_template',
     //提交执行计划
-    postPlan: BASE_URL + '/plan',
+    postPlan: BASE_URL + '/execute_plan',
     //上传执行计划文件
-    postPlanFile: BASE_URL + '/plan_file',
+    postPlanFile: BASE_URL + '/execute_plan_file',
     //全部审核通过
     postExaminationPassed: BASE_URL + '/examination_passed',
     //导出采购教材汇总表
@@ -40,9 +40,9 @@ export default {
     //驳回
     postTurnDown: BASE_URL + '/turn_down',
     //获取所有计划列表
-    getPlans: BASE_URL + '/plans',
+    getPlans: BASE_URL + '/execute_plans',
     //删除执行计划
-    deletePlans: BASE_URL + '/plan',
+    deletePlans: BASE_URL + '/execute_plan',
     //获取所有学院
     getColleges: BASE_URL + '/colleges',
     //获取执行计划年
@@ -52,7 +52,7 @@ export default {
     //征订教材汇总表格
     getDownBookMaterials: BASE_URL + '/down_book_materials',
     //获取已完成执行计划
-    getDonePlan: BASE_URL + '/done_plan',
+    getDonePlan: BASE_URL + '/done_execute_plan',
     //考试/考察/总体订书率表
     getSummaryTable: BASE_URL + '/summary_table',
     //出版社统计数量表
@@ -74,7 +74,7 @@ export default {
     //修改折扣
     patchDiscount: BASE_URL + '/discount',
     //办公室主任征订教材计划统计表
-    getTextbookPlanStatistics: BASE_URL + '/textbook_plan_statistics',
+    getTextbookPlanStatistics: BASE_URL + '/textbook_execute_plan_statistics',
     //办公室主任我的审核
     getDirectorReview: BASE_URL + '/director_review',
     //办公室主任驳回

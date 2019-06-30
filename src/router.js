@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Vuex from './store'
+import {CAS_LOGIN_URL} from "./api";
 
 Vue.use(Router)
 
@@ -115,6 +116,10 @@ function route2TruePath(next) {
  * 2.如果localStorage中last_path key 有值则放弃当前路由跳至last_path路径
  */
 router.beforeEach((to, from, next) => {
+    if (!to.path.startsWith('/token') && window.localStorage.getItem('authorization_token') == null) {
+        window.location.href = CAS_LOGIN_URL;
+        return;
+    }
     if (to.path.startsWith('/token')) {
         next();
         return;
