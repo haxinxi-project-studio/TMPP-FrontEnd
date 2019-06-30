@@ -198,7 +198,7 @@
       fetch(params = {}) {
         console.log('params:', params);
         this.loading = true;
-        Get(Api.getMyReview + '?executePlanId=' + this.nowSelectPlanId + '?page=1&size=50')
+        Get(Api.getMyReview + '?executePlanId=' + this.nowSelectPlanId + '&page=1&size=50')
           .do(response => {
             const pagination = {...this.pagination};
             pagination.total = response.data.data.total;
@@ -244,7 +244,7 @@
       exportData() {
         const plan = this.planList.filter(plan => plan.id === this.nowSelectPlanId)[0];
         Download(Api.getProcurementTable + "?execute_plan_id=" + this.nowSelectPlanId, headers => {
-          return plan.year + ' 第' + (plan.term ? "二" : "一") + '学期 ' + plan.level + ' ' + plan.department + ".xlsx";
+          return plan.year + ' 第' + (plan.term ? "二" : "一") + '学期 ' + plan.level + ' ' + plan.department + "采购教材汇总表.xlsx";
         })
       },
       /**
