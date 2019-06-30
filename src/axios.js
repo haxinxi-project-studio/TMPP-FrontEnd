@@ -61,19 +61,19 @@ instance.interceptors.response.use(
                     onceToast(error.response.data.msg);
                     return;
                 case 403:
-                    showErrorToast(403, '权限不足');
+                    console.warn('权限不足');
                     break;
                 case 404:
-                    showErrorToast(404, '请求URL不存在');
+                    console.warn('请求URL不存在');
                     break;
                 case 500:
-                    showErrorToast(500, '服务器错误', null);
+                    console.warn('服务器错误');
                     break;
                 case 503:
-                    showErrorToast(503, '服务器错误', null);
+                    console.warn('服务器错误');
                     break;
                 default:
-                    console.log(error.response.data.message);
+                    console.warn(error);
             }
             return Promise.reject(error);
         }
