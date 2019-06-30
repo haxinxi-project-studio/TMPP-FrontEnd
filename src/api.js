@@ -31,8 +31,6 @@ export default {
     postPlanFile: BASE_URL + '/execute_plan_file',
     //全部审核通过
     postExaminationPassed: BASE_URL + '/examination_passed',
-    //导出采购教材汇总表
-    getExportPurchaseTeachingMaterialsSummaryTable: BASE_URL + '/export_purchase_teaching_materials_summary_table',
     //我的审核
     getMyReview: BASE_URL + '/my_review',
     //是否购买样书

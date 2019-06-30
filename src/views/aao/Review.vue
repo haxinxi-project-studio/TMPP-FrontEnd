@@ -33,7 +33,7 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get, Post} from "../../axios";
+  import {Download, Get, Post} from "../../axios";
   import Api from "../../api"
   //表头
   const columns = [
@@ -197,7 +197,7 @@
       fetch(params = {}) {
         console.log('params:', params);
         this.loading = true;
-        Get(Api.getMyReview + '/' + this.nowSelectPlanId + '?page=1&size=50')
+        Get(Api.getMyReview + '?executePlanId=' + this.nowSelectPlanId + '?page=1&size=50')
           .do(response => {
             const pagination = {...this.pagination};
             pagination.total = response.data.data.total;
@@ -215,7 +215,7 @@
         Get(Api.getUndonePlan)
           .do(response => {
             this.planList = response.data.data.map(data => {
-              data.name = data.year + ' 第' + data.term + '学期 ' + data.educationalLevel + ' ' + data.teachingDepartment;
+              data.name = data.year + ' 第' + (data.term ? "二" : "一") + '学期 ' + data.level + ' ' + data.department;
               return data;
             });
             this.nowSelectPlanId = this.planList[0].id;
@@ -229,17 +229,22 @@
        */
       allPass() {
         Post(Api.postExaminationPassed)
+          .withErrorStartMsg("失败：")
           .withSuccessCode(201)
-          .withURLSearchParams({planId: this.nowSelectPlanId})
+          .withURLSearchParams({executePlanId: this.nowSelectPlanId})
           .do(response => {
-            console.log(response)
+            this.$message.success(response.data.msg);
+            this.initPlanList();
           })
       },
       /**
        * 导出表格
        */
       exportData() {
-        window.open(Api.getExportPurchaseTeachingMaterialsSummaryTable);
+        const plan = this.planList.filter(plan => plan.id === this.nowSelectPlanId)[0];
+        Download(Api.getProcurementTable + "?execute_plan_id=" + this.nowSelectPlanId, headers => {
+          return plan.year + ' 第' + (plan.term ? "二" : "一") + '学期 ' + plan.level + ' ' + plan.department + ".xlsx";
+        })
       },
       /**
        * 教务处购买样书
