@@ -104,6 +104,7 @@
        * 注销登录
        */
       logout() {
+        window.localStorage.removeItem('authorization_token');
         window.location.href = CAS_LOGOUT_URL;
       }
     },
