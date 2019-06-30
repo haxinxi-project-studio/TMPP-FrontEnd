@@ -143,13 +143,12 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             const s = this.submitForm;
-            this.submitForm = {...s, ...values, discount: this.nowSelectDiscount, planId: this.nowSelectPlanId};
-            console.log(this.submitForm);
+            this.submitForm = {...s, ...values, discount: this.nowSelectDiscount, executePlanId: this.nowSelectPlanId};
             Post(Api.postBookPurchaseInformation)
               .withSuccessCode(201)
               .withURLSearchParams(this.submitForm)
               .do(response => {
-                console.log(response);
+                this.$router.push("/buy");
               })
           }
         });

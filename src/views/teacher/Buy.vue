@@ -3,8 +3,9 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       执行计划：
-      <a-select v-model="nowSelectPlanId" style="width: 320px;margin-bottom: 15px">
-        <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}</a-select-option>
+      <a-select v-model="nowSelectPlanId" @change="onPlanSelectChange" style="width: 320px;margin-bottom: 15px">
+        <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
+        </a-select-option>
       </a-select>
       <a-table :columns="columns"
                :rowKey="record => record.id"
@@ -32,6 +33,8 @@
   import TeacherModifyBookModal from "@/components/TeacherModifyBookModal";
   import {Get} from "../../axios";
   import Api from "../../api";
+  import dayjs from 'dayjs'
+
   //表头
   const columns = [
     {
@@ -175,16 +178,18 @@
        *
        * @param params
        */
-      fetch(params = {}) {
-        console.log('params:', params);
-        Get(Api.getPurchaseBook + '/' + this.nowSelectPlanId + '?page=1&size=50')
+      fetch(params = {page: 1, results: 50}) {
+        Get(Api.getPurchaseBook + '/' + this.nowSelectPlanId + '?page=' + params.page + '&size=' + params.results)
           .do(response => {
             const pagination = {...this.pagination};
             // Read total count from server
             // pagination.total = data.totalCount;
             pagination.total = response.data.data.total;
             this.loading = false;
-            this.data = response.data.data.list;
+            this.data = response.data.data.list.map(d => {
+              d.publicationDate = dayjs(d.publicationDate).format("YYYY年MM月");
+              return d;
+            });
             this.pagination = pagination;
           });
       },
@@ -219,6 +224,9 @@
           .doAfter(() => {
             this.fetch();
           })
+      },
+      onPlanSelectChange() {
+        this.fetch();
       }
     },
     created() {
