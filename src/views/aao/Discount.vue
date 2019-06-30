@@ -76,6 +76,9 @@
        * @param column
        */
       handleChange(value, key, column) {
+        if (isNaN(Number(value))) {
+          return;
+        }
         const newData = [...this.discountData];
         const target = newData.filter(item => key === item.id)[0];
         if (target) {
