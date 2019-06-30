@@ -5,20 +5,21 @@
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-model="nowSelectPlanId" @change="handlePlanChange" placeholder="选择执行计划">
-            <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}</a-select-option>
+            <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
+            </a-select-option>
           </a-select>
-          <a href="">下载该执行计划</a>
+          <a @click="down">下载该执行计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-select v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
+          <a-select v-decorator="['courseId',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
                     placeholder="选择课程名称">
             <a-select-option v-for="courseTitle in courseTitleList" :key="courseTitle.id" :value="courseTitle.id">
-              {{courseTitle.courseCode+'-'+courseTitle.courseTitle}}
+              {{courseTitle.code+'-'+courseTitle.name}}
             </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="是否购书：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-radio-group v-model="submitForm.bookPurchase" @change="handleByBookRadio">
+          <a-radio-group v-model="submitForm.isBookPurchase" @change="handleByBookRadio">
             <a-radio :value="true">是</a-radio>
             <a-radio :value="false">否</a-radio>
           </a-radio-group>
@@ -48,8 +49,9 @@
                             v-decorator="['unitPrice',{rules: [{ required: true, message: '请输入正确的价格!',validator:valueMustThan0Validator }]}]"/>
           </a-form-item>
           <a-form-item label="折扣：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-select v-model="nowSelectDiscountId">
-              <a-select-option v-for="discount in discountList" :key="discount.id" :value="discount.id">{{discount.discount}}
+            <a-select v-model="nowSelectDiscount">
+              <a-select-option v-for="discount in discountList" :key="discount.id" :value="discount.discount">
+                {{discount.discount}}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -68,7 +70,7 @@
           </a-form-item>
           <a-form-item label="联系电话：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input-number style="width: 200px"
-                            v-decorator="['subscriberNumber',{rules: [{ required: true, message: '请输入正确的联系电话!',len:11 ,transform:value=>value.toString()}]}]"/>
+                            v-decorator="['subscriberTel',{rules: [{ required: true, message: '请输入正确的联系电话!',len:11 ,transform:value=>value.toString()}]}]"/>
           </a-form-item>
         </div>
         <div v-else>
@@ -88,7 +90,7 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get, Post} from "../../axios";
+  import {Download, Get, Post} from "../../axios";
   import Api from "../../api";
   import moment from 'moment';
   import 'moment/locale/zh-cn';
@@ -117,13 +119,13 @@
         nowSelectCourseTitleId: '',
         //折扣下拉框数据
         discountList: [],
-        //目前选择的折扣ID
-        nowSelectDiscountId: '',
+        //目前选择的折扣
+        nowSelectDiscount: null,
         submitForm: {
           //教材类别
           textBookCategory: 0,
           //是否购书
-          bookPurchase: true,
+          isBookPurchase: true,
           //出版日期
           publicationDate: '2019-01'
         },
@@ -140,9 +142,9 @@
         e.preventDefault();
         this.form.validateFields((err, values) => {
           if (!err) {
-            console.log('Received values of form: ', values);
             const s = this.submitForm;
-            this.submitForm = {...s, ...values, discountId: this.nowSelectDiscountId};
+            this.submitForm = {...s, ...values, discount: this.nowSelectDiscount, planId: this.nowSelectPlanId};
+            console.log(this.submitForm);
             Post(Api.postBookPurchaseInformation)
               .withSuccessCode(201)
               .withURLSearchParams(this.submitForm)
@@ -166,7 +168,7 @@
         Get(Api.getUndonePlan)
           .do(response => {
             this.planList = response.data.data.map(data => {
-              data.name = data.year + ' 第' + data.term + '学期 ' + data.educationalLevel + ' ' + data.teachingDepartment;
+              data.name = data.year + ' 第' + (data.term ? "二" : "一") + '学期 ' + data.level + ' ' + data.department;
               return data;
             });
             this.nowSelectPlanId = this.planList[0].id;
@@ -177,7 +179,7 @@
         Get(Api.getDiscounts)
           .do(response => {
             this.discountList = response.data.data;
-            this.nowSelectDiscountId = this.discountList[0].id;
+            this.nowSelectDiscount = this.discountList[0].discount;
           })
       },
       /**
@@ -185,7 +187,7 @@
        * @param planId 执行计划ID
        */
       initCourseTitles(planId) {
-        Get(Api.getCourseTitles + '/' + planId)
+        Get(Api.getCourseTitles + '?execute_plan_id=' + planId)
           .do(response => {
             this.courseTitleList = response.data.data;
             this.nowSelectCourseTitleId = this.courseTitleList[0].id
@@ -218,6 +220,15 @@
         } else {
           callback();
         }
+      },
+      /**
+       * 下载执行计划
+       */
+      down() {
+        const plan = this.planList.filter(plan => plan.id === this.nowSelectPlanId)[0];
+        Download(Api.getDownPlan + "?executePlanId=" + this.nowSelectPlanId, headers => {
+          return plan.year + ' 第' + (plan.term ? "二" : "一") + '学期 ' + plan.level + ' ' + plan.department + "执行计划.xlsx";
+        })
       }
     },
     created() {

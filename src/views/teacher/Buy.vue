@@ -211,7 +211,7 @@
         Get(Api.getUndonePlan)
           .do(response => {
             this.planList = response.data.data.map(data => {
-              data.name = data.year + ' 第' + data.term + '学期 ' + data.educationalLevel + ' ' + data.teachingDepartment;
+              data.name = data.year + ' 第' + (data.term ? "二" : "一") + '学期 ' + data.level + ' ' + data.department;
               return data;
             });
             this.nowSelectPlanId = this.planList[0].id;
