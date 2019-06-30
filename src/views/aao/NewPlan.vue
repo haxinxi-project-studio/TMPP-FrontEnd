@@ -32,13 +32,13 @@
                     placeholder="选择教育层次">
             <a-select-option v-for="educational_levels in formData.educational_levels" :key="educational_levels.id"
                              :value="educational_levels.id">
-              {{educational_levels.name}}
+              {{educational_levels.educationalLevel}}
             </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-upload name="planFile" :multiple="false" :action="fileUploadUrl"
-                    accept=".xls,.xlsx" :beforeUpload="beforeUpload"
+          <a-upload name="planFile" :multiple="false" accept=".xls,.xlsx" :beforeUpload="beforeUpload"
+                    :customRequest="customRequest"
                     v-decorator="['plan',{rules: [{ required: true, message: '请上传执行计划！' }]}]">
             <a-button>
               <a-icon type="upload"/>
@@ -48,7 +48,7 @@
           <a @click="downTemplate">下载执行计划模板</a>
         </a-form-item>
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
-          <a-button type="primary" html-type="submit" :disabled="disabledSubmitBtn">提交</a-button>
+          <a-button type="primary" html-type="submit" :disabled="disabledSubmitBtn" :loading="loading">提交</a-button>
         </a-form-item>
       </a-form>
     </div>
@@ -57,7 +57,7 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get, Post} from "../../axios";
+  import {Download, Get, Post} from "../../axios";
   import Api from '../../api'
 
   export default {
@@ -77,6 +77,8 @@
           //结束学年
           endValue: 2020
         },
+        //正在提交
+        loading: false,
         //禁用提交按钮
         disabledSubmitBtn: false,
         //表单数据
@@ -90,9 +92,9 @@
         submitData: {
           //学期 1 2
           term: 1,
-          year: '2019-2020'
-        },
-        fileUploadUrl: Api.postPlanFile
+          year: '2019-2020',
+          fileId: null
+        }
       }
     },
     methods: {
@@ -108,14 +110,18 @@
             //组装提交数据
             this.submitData.teachingDepartment = values.teaching_department;
             this.submitData.educationalLevel = values.educational_level;
-            this.submitData.fileId = values.plan.file.response.data.fileId;
+            this.loading = true;
+            this.disabledSubmitBtn = true;
             Post(Api.postPlan)
               .withSuccessCode(201)
               .withURLSearchParams(this.submitData)
               .do(response => {
-                this.$message.success(response.data.msg, 2, () => {
-                  this.$router.push("/plan_list");
-                });
+                this.$message.success(response.data.msg);
+                this.$router.push("/plan_list");
+              })
+              .doAfter(() => {
+                this.loading = false;
+                this.disabledSubmitBtn = false;
               })
           }
         });
@@ -201,7 +207,32 @@
        * 下载执行计划模板
        */
       downTemplate() {
-        window.open(Api.getDownloadPlanTemplate)
+        Download(Api.getDownloadPlanTemplate, headers => {
+          return "执行计划模板.xlsx"
+        });
+      },
+      /**
+       * 文件上传
+       * @param data data
+       */
+      customRequest(data) {
+        console.log(data);
+        let progress = {percent: 0};
+        Post(Api.postPlanFile)
+          .withSuccessCode(201)
+          .withErrorStartMsg("上传失败：")
+          .withFormData({planFile: data.file}, true, p => {
+            progress.percent = p;
+            if (progress.percent < 100) {
+              data.onProgress(progress)
+            } else {
+              data.onSuccess();
+            }
+          })
+          .do(response => {
+            this.$message.success('上传成功');
+            this.submitData.fileId = response.data.data;
+          })
       }
     },
     created() {

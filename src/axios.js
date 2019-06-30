@@ -145,7 +145,7 @@ _request.prototype.withURLSearchParams = function (params) {
     return this;
 };
 
-_request.prototype.withFormData = function (params, enableUploadProgress = true) {
+_request.prototype.withFormData = function (params, enableUploadProgress = true, uploadProgress) {
     let formData = new FormData();
     for (let p in params) {
         if (params.hasOwnProperty(p)) {
@@ -155,6 +155,7 @@ _request.prototype.withFormData = function (params, enableUploadProgress = true)
     }
     this.formData = formData;
     this.enableUploadProgress = enableUploadProgress;
+    this.uploadProgress = uploadProgress;
     return this;
 };
 
@@ -189,22 +190,15 @@ _request.prototype.do = function (fn) {
                 if (this.enableUploadProgress === false) {
                     promise = instance.post(this.url, this.formData, {headers: {'content-type': 'multipart/form-data'}});
                 } else {
-                    /*let uploadToast = Vue.toasted.info('正在上传：0%', {
-                        position: "top-right",
-                        icon: 'hourglass_empty'
-                    });
+                    const uploadProgress = this.uploadProgress;
                     let config = {
                         headers: {'content-type': 'multipart/form-data'},
                         onUploadProgress: progressEvent => {
-                            let progress = (progressEvent.loaded / progressEvent.total * 100 | 0) + '%';
-                            uploadToast.text("正在上传：" + progress);
-                            if (progress === '100%') {
-                                uploadToast.goAway(100);
-                            }
+                            let progress = progressEvent.loaded / progressEvent.total * 100 | 0;
+                            uploadProgress(progress);
                         }
                     };
-                    promise = instance.post(this.url, this.formData, config);*/
-                    promise = instance.post(this.url, this.formData, {headers: {'content-type': 'multipart/form-data'}});
+                    promise = instance.post(this.url, this.formData, config);
                 }
             } else {
                 promise = instance.post(this.url);
