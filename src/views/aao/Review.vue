@@ -4,7 +4,8 @@
     <div class="content-style">
       执行计划：
       <a-select v-model="nowSelectPlanId" style="width: 320px;margin-bottom: 15px">
-        <a-select-option v-for="planItem in planList" :value="planItem.id">{{planItem.name}}</a-select-option>
+        <a-select-option v-for="planItem in planList" :value="planItem.id" :key="planItem.id">{{planItem.name}}
+        </a-select-option>
       </a-select>
       <a-button class="m-l-2" @click="allPass">全部审核通过</a-button>
       <a-button class="m-l-2" @click="exportData">导出采购教材汇总表</a-button>
