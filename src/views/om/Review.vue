@@ -111,7 +111,7 @@
     {
       title: '状态',
       dataIndex: 'status',
-      width: 100,
+      width: 160,
       fixed: 'right',
     },
     {
@@ -158,7 +158,6 @@
        * @param obj 某条书籍
        */
       handleRejectBook(obj) {
-        console.log(obj);
         Post(Api.postOfficeTurnDown)
           .withSuccessCode(201)
           .withURLSearchParams({id: obj.id})
@@ -173,7 +172,6 @@
        * @param sorter
        */
       handleTableChange(pagination, filters, sorter) {
-        console.log(pagination);
         const pager = {...this.pagination};
         pager.current = pagination.current;
         this.pagination = pager;

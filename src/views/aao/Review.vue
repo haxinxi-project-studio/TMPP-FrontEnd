@@ -15,17 +15,18 @@
                :pagination="pagination"
                :loading="loading"
                @change="handleTableChange"
-               :scroll="{ x: 3000 }"
+               :scroll="{ x: 3240 }"
                class="table-box"
       >
         <template slot="buy" slot-scope="text">
-          <a-button-group>
-            <a-button @click="buyBook(true)">是</a-button>
-            <a-button @click="buyBook(false)">否</a-button>
-          </a-button-group>
+          <a-radio-group :defaultValue="text.buyBook.toString()" buttonStyle="solid" @change="buyBook($event,text)">
+            <a-radio-button value="true">是</a-radio-button>
+            <a-radio-button value="false">否</a-radio-button>
+          </a-radio-group>
         </template>
         <template slot="action" slot-scope="text">
-          <a @click="handleRejectBook(text)">驳回</a>&nbsp;
+          <a @click="handleRejectBook(text)"
+             :disabled="(text.statusCode===2||text.statusCode===3||text.statusCode===4)">驳回</a>&nbsp;
         </template>
       </a-table>
     </div>
@@ -36,6 +37,8 @@
   import ContentTitle from "@/components/ContentTitle";
   import {Download, Get, Post} from "../../axios";
   import Api from "../../api"
+  import dayjs from 'dayjs'
+
   //表头
   const columns = [
     {
@@ -45,7 +48,7 @@
     },
     {
       title: '课程名称',
-      dataIndex: 'courseTitle',
+      dataIndex: 'courseName',
       width: 200,
     },
     {
@@ -54,12 +57,12 @@
     },
     {
       title: '教材名称',
-      dataIndex: 'textbookName',
+      dataIndex: 'textBookName',
       width: 200,
     },
     {
       title: '教材类别',
-      dataIndex: 'textbookCategory',
+      dataIndex: 'textBookCategory',
       width: 200,
     },
     {
@@ -104,7 +107,7 @@
     },
     {
       title: '联系电话',
-      dataIndex: 'subscriberNumber',
+      dataIndex: 'subscriberTel',
       width: 200,
     },
     {
@@ -114,8 +117,8 @@
     },
     {
       title: '状态',
-      dataIndex: 'approvalStatus',
-      width: 100,
+      dataIndex: 'status',
+      width: 160,
       fixed: 'right',
     },
     {
@@ -169,12 +172,11 @@
        * @param obj 某条书籍
        */
       handleRejectBook(obj) {
-        console.log(obj);
         Post(Api.postTurnDown)
           .withSuccessCode(201)
           .withURLSearchParams({id: obj.id})
           .do(response => {
-            console.log(response);
+            this.fetch();
           })
       },
       /**
@@ -184,7 +186,6 @@
        * @param sorter
        */
       handleTableChange(pagination, filters, sorter) {
-        console.log(pagination);
         const pager = {...this.pagination};
         pager.current = pagination.current;
         this.pagination = pager;
@@ -201,13 +202,40 @@
        * @param params
        */
       fetch(params = {}) {
-        console.log('params:', params);
         this.loading = true;
         Get(Api.getMyReview + '?executePlanId=' + this.nowSelectPlanId + '&page=1&size=50')
           .do(response => {
             const pagination = {...this.pagination};
             pagination.total = response.data.data.total;
-            this.data = response.data.data.list;
+            this.data = response.data.data.list.filter(d => {
+              d.publicationDate = dayjs(d.publicationDate).format("YYYY年MM月");
+              if (d.textBookCategory === true || d.textBookCategory === false) {
+                d.textBookCategory = d.textBookCategory ? "自编" : "出版";
+              }
+              d.statusCode = d.status;
+              switch (d.status) {
+                //（0：未审核，1：办公室主任审核通过，2：教务处审核通过，3：办公室主任驳回，4：教务处驳回）
+                case 1:
+                  d.status = "办公室主任审核通过";
+                  break;
+                case 2:
+                  d.status = "教务处审核通过";
+                  break;
+                case 3:
+                  d.status = "办公室主任驳回";
+                  break;
+                case 4:
+                  d.status = "教务处驳回";
+                  break;
+                default :
+                  d.status = "未审核";
+              }
+
+              if (!d.bookPurchase) {
+                d.publicationDate = null;
+              }
+              return d;
+            });
             this.pagination = pagination;
           })
           .doAfter(() => {
@@ -254,14 +282,15 @@
       },
       /**
        * 教务处购买样书
-       * @param isBuy 是否买
+       * @param e 事件
+       * @param obj 对象
        */
-      buyBook(isBuy) {
+      buyBook(e, obj) {
         Post(Api.postBuySampleBook)
           .withSuccessCode(201)
-          .withURLSearchParams({id: this.nowSelectPlanId, isBuyBook: isBuy})
+          .withURLSearchParams({bookId: obj.id, isBuyBook: e.target.value})
           .do(response => {
-            console.log(response);
+            this.$message.success("操作成功");
           })
       }
     },

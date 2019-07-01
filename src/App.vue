@@ -151,4 +151,8 @@
     background: #fff;
     min-height: 280px;
   }
+
+  .ant-table-fixed-right{
+    z-index: 999;
+  }
 </style>

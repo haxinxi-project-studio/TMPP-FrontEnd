@@ -115,7 +115,7 @@
     {
       title: '状态',
       dataIndex: 'status',
-      width: 100,
+      width: 160,
       fixed: 'right',
     },
     {
@@ -168,7 +168,6 @@
        * @param sorter
        */
       handleTableChange(pagination, filters, sorter) {
-        console.log(pagination);
         const pager = {...this.pagination};
         pager.current = pagination.current;
         this.pagination = pager;

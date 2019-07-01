@@ -122,7 +122,6 @@
             reason: submitObj.reason
           }
         }
-        console.log(submitObj);
         Patch(Api.patchPurchase)
           .withSuccessCode(204)
           .withErrorStartMsg("修改失败：")

@@ -106,7 +106,6 @@
         e.preventDefault();
         this.form.validateFields((err, values) => {
           if (!err) {
-            console.log('Received values of form: ', values);
             //组装提交数据
             this.submitData.teachingDepartment = values.teaching_department;
             this.submitData.educationalLevel = values.educational_level;
@@ -215,7 +214,6 @@
        * @param data data
        */
       customRequest(data) {
-        console.log(data);
         let progress = {percent: 0};
         Post(Api.postPlanFile)
           .withSuccessCode(201)
