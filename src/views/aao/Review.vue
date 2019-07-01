@@ -108,6 +108,11 @@
       width: 200,
     },
     {
+      title: '未购书原因',
+      dataIndex: 'reason',
+      width: 200,
+    },
+    {
       title: '状态',
       dataIndex: 'approvalStatus',
       width: 100,

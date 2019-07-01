@@ -56,7 +56,7 @@
     },
     {
       title: '计划完成时间',
-      dataIndex: 'endTime'
+      dataIndex: 'gmtModified'
     },
     {
       title: '状态',
@@ -132,6 +132,7 @@
               m.term = m.term ? "第二学期" : "第一学期";
               m.status = m.status ? "完成" : "未完成";
               m.gmtCreate = dayjs(m.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+              m.gmtModified = dayjs(m.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
               return m;
             });
             this.pagination = pagination;

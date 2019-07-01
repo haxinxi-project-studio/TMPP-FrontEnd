@@ -11,10 +11,10 @@
           <a @click="down">下载该执行计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-select v-decorator="['courseId',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
+          <a-select v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
                     placeholder="选择课程名称">
-            <a-select-option v-for="courseTitle in courseTitleList" :key="courseTitle.id" :value="courseTitle.id">
-              {{courseTitle.code+'-'+courseTitle.name}}
+            <a-select-option v-for="courseTitle in courseTitleList" :key="courseTitle.id" :value="courseTitle.courseCode">
+              {{courseTitle.courseCode+'-'+courseTitle.courseName}}
             </a-select-option>
           </a-select>
         </a-form-item>
@@ -189,7 +189,7 @@
         Get(Api.getCourseTitles + '?execute_plan_id=' + planId)
           .do(response => {
             this.courseTitleList = response.data.data;
-            this.nowSelectCourseTitleId = this.courseTitleList[0].id
+            this.nowSelectCourseTitleId = this.courseTitleList[0].courseCode
           })
       },
       /**

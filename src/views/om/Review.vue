@@ -19,7 +19,7 @@
                class="table-box"
       >
         <template slot="action" slot-scope="text">
-          <a @click="handleRejectBook(text)">驳回</a>&nbsp;
+          <a @click="handleRejectBook(text)" :disabled="(text.statusCode !== 0 && text.statusCode !== 4)">驳回</a>&nbsp;
         </template>
       </a-table>
     </div>
@@ -30,6 +30,8 @@
   import ContentTitle from "@/components/ContentTitle";
   import {Download, Get, Post} from "../../axios";
   import Api from "../../api"
+  import dayjs from 'dayjs'
+
   //表头
   const columns = [
     {
@@ -39,7 +41,7 @@
     },
     {
       title: '课程名称',
-      dataIndex: 'courseTitle',
+      dataIndex: 'courseName',
       width: 200,
     },
     {
@@ -48,12 +50,12 @@
     },
     {
       title: '教材名称',
-      dataIndex: 'textbookName',
+      dataIndex: 'textBookName',
       width: 200,
     },
     {
       title: '教材类别',
-      dataIndex: 'textbookCategory',
+      dataIndex: 'textBookCategory',
       width: 200,
     },
     {
@@ -98,12 +100,17 @@
     },
     {
       title: '联系电话',
-      dataIndex: 'subscriberNumber',
+      dataIndex: 'subscriberTel',
+      width: 200,
+    },
+    {
+      title: '未购书原因',
+      dataIndex: 'reason',
       width: 200,
     },
     {
       title: '状态',
-      dataIndex: 'approvalStatus',
+      dataIndex: 'status',
       width: 100,
       fixed: 'right',
     },
@@ -156,7 +163,7 @@
           .withSuccessCode(201)
           .withURLSearchParams({id: obj.id})
           .do(response => {
-            console.log(response);
+            this.fetch();
           })
       },
       /**
@@ -183,13 +190,40 @@
        * @param params
        */
       fetch(params = {page: 1, results: 50}) {
-        console.log('params:', params);
         this.loading = true;
         Get(Api.getDirectorReview + '?executePlanId=' + this.nowSelectPlanId + '&page=' + params.page + '&size=' + params.results)
           .do(response => {
             const pagination = {...this.pagination};
             pagination.total = response.data.data.total;
-            this.data = response.data.data.list;
+            this.data = response.data.data.list.map(d => {
+              d.publicationDate = dayjs(d.publicationDate).format("YYYY年MM月");
+              if (d.textBookCategory === true || d.textBookCategory === false) {
+                d.textBookCategory = d.textBookCategory ? "自编" : "出版";
+              }
+              d.statusCode = d.status;
+              switch (d.status) {
+                //（0：未审核，1：办公室主任审核通过，2：教务处审核通过，3：办公室主任驳回，4：教务处驳回）
+                case 1:
+                  d.status = "办公室主任审核通过";
+                  break;
+                case 2:
+                  d.status = "教务处审核通过";
+                  break;
+                case 3:
+                  d.status = "办公室主任驳回";
+                  break;
+                case 4:
+                  d.status = "教务处驳回";
+                  break;
+                default :
+                  d.status = "未审核";
+              }
+
+              if (!d.bookPurchase) {
+                d.publicationDate = null;
+              }
+              return d;
+            });
             this.pagination = pagination;
           })
           .doAfter(() => {
