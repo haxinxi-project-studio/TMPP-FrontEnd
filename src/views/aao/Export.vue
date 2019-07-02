@@ -179,10 +179,10 @@
        */
       exportTable(which) {
         const planId = this.nowSelectPlanId;
-        if (planId == null) {
+        if (planId === '') {
           this.$notification.info({
-            message: '没有未完成的执行计划',
-            description: '目前没有未完成的执行计划，请添加执行计划或刷新页面后再试！',
+            message: '没有已完成的执行计划',
+            description: '目前没有已完成的执行计划，请添加执行计划或刷新页面后再试！',
           });
           return;
         }
