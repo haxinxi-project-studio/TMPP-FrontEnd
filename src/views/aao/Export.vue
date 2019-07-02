@@ -20,7 +20,7 @@
       </a-select>
       &nbsp;学期：
       <a-select v-model="nowSelectTermId" style="width: 120px">
-        <a-select-option v-for="term in termList" :key="term" :value="term">{{term}}</a-select-option>
+        <a-select-option v-for="term in termList" :key="term" :value="term">{{term===0?'第一学期':'第二学期'}}</a-select-option>
       </a-select>
       <br/>
       <a-button @click="exportDownBookMaterials" type="primary" icon="download" class="m-t-2">导出征订教材汇总表 ↓</a-button>

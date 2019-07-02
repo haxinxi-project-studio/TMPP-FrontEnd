@@ -17,7 +17,7 @@
                class="table-box"
       >
         <template slot="action" slot-scope="text">
-          <a @click="handleEditBook(text)" :disabled="(text.statusCode===1||text.statusCode===2)">修改</a>&nbsp;
+          <a @click="handleEditBook(text)" :disabled="(text.statusCode===1||text.statusCode===2||text.statusCode===4)">修改</a>&nbsp;
         </template>
       </a-table>
     </div>

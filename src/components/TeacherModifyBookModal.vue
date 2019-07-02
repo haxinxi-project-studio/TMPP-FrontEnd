@@ -35,7 +35,7 @@
           <a-input v-model="bookObj.author"/>
         </a-form-item>
         <a-form-item label="价格：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-input-number style="width: 200px" :value="bookObj.unitPrice"/>
+          <a-input-number style="width: 200px" v-model="bookObj.unitPrice"/>
         </a-form-item>
         <a-form-item label="折扣：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-model="bookObj.discount">
@@ -91,8 +91,6 @@
         bookObj: {},
         //折扣下拉框数据
         discountList: [],
-        //目前选择的折扣
-        nowSelectDiscount: null,
         //课程名称下拉框数据
         courseTitleList: [],
         //默认出版日期
@@ -144,13 +142,21 @@
     mounted() {
       this.bookObj = this.value;
       this.bookObj.executePlanId = this.planId;
+      if (this.bookObj.publicationDate === null) {
+        this.bookObj.publicationDate = "2019年07月";
+      }
+      if (this.bookObj.textBookCategory === null) {
+        this.bookObj.textBookCategory = "出版";
+      }
       this.defaultPublicationDate = moment(this.bookObj.publicationDate, 'YYYY年MM月');
       //是否购书根据传过来的值决定
       this.isBuyBook = this.bookObj.bookPurchase;
       Get(Api.getDiscounts)
         .do(response => {
           this.discountList = response.data.data;
-          this.nowSelectDiscount = this.discountList[0].discount;
+          if (this.bookObj.discount === null) {
+            this.bookObj.discount = this.discountList[0].discount;
+          }
         });
       Get(Api.getCourseTitles + '?execute_plan_id=' + this.planId)
         .do(response => {

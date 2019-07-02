@@ -19,7 +19,10 @@
                class="table-box"
       >
         <template slot="buy" slot-scope="text">
-          <a-radio-group :defaultValue="text.buyBook.toString()" buttonStyle="solid" @change="buyBook($event,text)">
+          <a-radio-group :disabled="(text.statusCode===2||text.statusCode===4||!text.bookPurchase)"
+                         :defaultValue="text.buyBook.toString()"
+                         buttonStyle="solid"
+                         @change="buyBook($event,text)">
             <a-radio-button value="true">是</a-radio-button>
             <a-radio-button value="false">否</a-radio-button>
           </a-radio-group>
