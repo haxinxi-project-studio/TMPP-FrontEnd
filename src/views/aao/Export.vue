@@ -155,8 +155,20 @@
        * 导出征订教材汇总表
        */
       exportDownBookMaterials() {
-        const teachingDepartmentName = this.teachingDepartmentList.filter(t => t.id = this.nowTeachingDepartmentListId)[0].name;
-        const collegeName = this.collegeList.filter(c => c.id === this.nowSelectCollegeId)[0].name;
+        const teachingDepartmentList = this.teachingDepartmentList;
+        const collegeList = this.collegeList;
+        let teachingDepartmentName;
+        let collegeName;
+        for (let i = 0; i < teachingDepartmentList.length; i++) {
+          if (teachingDepartmentList[i].id === this.nowTeachingDepartmentListId) {
+            teachingDepartmentName = teachingDepartmentList[i].name;
+          }
+        }
+        for (let i = 0; i < collegeList.length; i++) {
+          if (collegeList[i].id === this.nowSelectCollegeId) {
+            collegeName = collegeList[i].name;
+          }
+        }
         Download(Api.getDownBookMaterials + '?year=' + this.nowSelectYearId + '&college=' + this.nowSelectCollegeId + '&teachingDepartment=' + this.nowTeachingDepartmentListId + '&term=' + this.nowSelectTermId, headers => {
           return this.nowSelectYearId + "第" + (this.nowSelectTermId ? "二学期" : "一学期-") + teachingDepartmentName + "-" + collegeName + "-征订教材汇总表.xlsx";
         });

@@ -251,7 +251,15 @@
             this.nowSelectPlanId = this.planList[0].id;
           })
           .doAfter(() => {
-            this.fetch();
+            if (this.planList.length === 0) {
+              this.loading = false;
+              this.$notification.info({
+                message: '没有未完成的执行计划',
+                description: '目前没有未完成的执行计划，请等待教务处添加执行计划或刷新页面后再试！',
+              });
+            } else {
+              this.fetch();
+            }
           })
       },
       onPlanSelectChange() {

@@ -8,6 +8,7 @@
         <a-input-number :min="0" :max="1" :step="0.01" :defaultValue="discount" @change="onNewDiscountChange"/>
       </a-modal>
       <a-table :columns="columns" :dataSource="discountData" :rowKey="record => record.id" :pagination="false"
+               :loading="loading"
                bordered>
         <template slot="discount" slot-scope="text, record, index">
           <div key="discount">
@@ -65,7 +66,8 @@
         columns,
         visible: false,
         confirmLoading: false,
-        discount: 1
+        discount: 1,
+        loading: false
       };
     },
     methods: {
@@ -148,9 +150,13 @@
        * 初始化数据
        */
       initData() {
+        this.loading = true;
         Get(Api.getDiscounts)
           .do(response => {
             this.discountData = response.data.data;
+          })
+          .doAfter(() => {
+            this.loading = false;
           })
       },
       /**

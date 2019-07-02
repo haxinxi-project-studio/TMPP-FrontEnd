@@ -13,7 +13,8 @@
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
                     placeholder="选择课程名称">
-            <a-select-option v-for="courseTitle in courseTitleList" :key="courseTitle.id" :value="courseTitle.courseCode">
+            <a-select-option v-for="courseTitle in courseTitleList" :key="courseTitle.id"
+                             :value="courseTitle.courseCode">
               {{courseTitle.courseCode+'-'+courseTitle.courseName}}
             </a-select-option>
           </a-select>
@@ -70,7 +71,7 @@
           </a-form-item>
           <a-form-item label="联系电话：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-input-number style="width: 200px"
-                            v-decorator="['subscriberTel',{rules: [{ required: true, message: '请输入正确的联系电话!',len:11 ,transform:value=>value.toString()}]}]"/>
+                            v-decorator="['subscriberTel',{rules: [{ required: true, message: '请输入正确的联系电话!',len:11 ,transform:value=>value!==undefined?value.toString():''}]}]"/>
           </a-form-item>
         </div>
         <div v-else>
@@ -166,6 +167,12 @@
       initData() {
         Get(Api.getUndonePlan)
           .do(response => {
+            if (response.data.data.length === 0) {
+              this.$notification.info({
+                message: '没有未完成的执行计划',
+                description: '目前没有未完成的执行计划，请等待教务处添加执行计划或刷新页面后再试！',
+              });
+            }
             this.planList = response.data.data.map(data => {
               data.name = data.year + ' 第' + (data.term ? "二" : "一") + '学期 ' + data.level + ' ' + data.department;
               return data;
