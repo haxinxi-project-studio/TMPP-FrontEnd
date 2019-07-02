@@ -62,7 +62,7 @@
 
 <script>
   import ContentTitle from "@/components/ContentTitle";
-  import {Get} from "../../axios";
+  import {Download, Get} from "../../axios";
   import Api from "../../api";
 
   export default {
@@ -106,7 +106,7 @@
         Get(Api.getDonePlan)
           .do(response => {
             this.planList = response.data.data.map(data => {
-              data.name = data.year + ' 第' + data.term + '学期 ' + data.educationalLevel + ' ' + data.teachingDepartment;
+              data.name = data.year + ' 第' + (data.term ? "二" : "一") + '学期 ' + data.level + ' ' + data.department;
               return data;
             });
             this.nowSelectPlanId = this.planList[0].id;
@@ -155,7 +155,11 @@
        * 导出征订教材汇总表
        */
       exportDownBookMaterials() {
-        window.open(Api.getDownBookMaterials + '?year=' + this.nowSelectYearId + '&college=' + this.nowSelectCollegeId + '&teachingDepartment=' + this.nowTeachingDepartmentListId + '&term=' + this.nowSelectTermId);
+        const teachingDepartmentName = this.teachingDepartmentList.filter(t => t.id = this.nowTeachingDepartmentListId)[0].name;
+        const collegeName = this.collegeList.filter(c => c.id === this.nowSelectCollegeId)[0].name;
+        Download(Api.getDownBookMaterials + '?year=' + this.nowSelectYearId + '&college=' + this.nowSelectCollegeId + '&teachingDepartment=' + this.nowTeachingDepartmentListId + '&term=' + this.nowSelectTermId, headers => {
+          return this.nowSelectYearId + "第" + (this.nowSelectTermId ? "二学期" : "一学期-") + teachingDepartmentName + "-" + collegeName + "-征订教材汇总表.xlsx";
+        });
       },
       /**
        * 通用导出
@@ -184,7 +188,9 @@
             url = Api.getProcurementTable;
             break;
         }
-        window.open(url + '/' + planId);
+        Download(url + "?execute_plan_id=" + planId, headers => {
+          return "统计表.xlsx";
+        });
       }
     },
     created() {
