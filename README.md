@@ -16,3 +16,5 @@
 ## 开源库
 - JavaScript框架：Vue.JS
 - CSS框架：Ant Design
+- 请求库：axios
+- 日期处理：moment

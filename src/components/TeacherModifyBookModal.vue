@@ -79,6 +79,8 @@
   import moment from 'moment';
   import 'moment/locale/zh-cn';
 
+  moment.locale('zh-cn');
+
   export default {
     props: ['show', 'value', 'planId'],
     name: "TeacherModifyBookModal",

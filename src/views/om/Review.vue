@@ -31,7 +31,10 @@
   import ContentTitle from "@/components/ContentTitle";
   import {Download, Get, Post} from "../../axios";
   import Api from "../../api"
-  import dayjs from 'dayjs'
+  import moment from 'moment';
+  import 'moment/locale/zh-cn';
+
+  moment.locale('zh-cn');
 
   //表头
   const columns = [
@@ -197,7 +200,7 @@
             const pagination = {...this.pagination};
             pagination.total = response.data.data.total;
             this.data = response.data.data.list.map(d => {
-              d.publicationDate = dayjs(d.publicationDate).format("YYYY年MM月");
+              d.publicationDate = moment(d.publicationDate).format("YYYY年MM月");
               if (d.textBookCategory === true || d.textBookCategory === false) {
                 d.textBookCategory = d.textBookCategory ? "自编" : "出版";
               }

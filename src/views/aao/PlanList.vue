@@ -30,7 +30,10 @@
   import ContentTitle from "@/components/ContentTitle";
   import {Del, Download, Get} from "../../axios";
   import Api from "../../api";
-  import dayjs from 'dayjs'
+  import moment from 'moment';
+  import 'moment/locale/zh-cn';
+
+  moment.locale('zh-cn');
 
   //表头
   const columns = [
@@ -130,8 +133,8 @@
             this.data = response.data.data.list.map(m => {
               m.term = m.term ? "第二学期" : "第一学期";
               m.status = m.status ? "完成" : "未完成";
-              m.gmtCreate = dayjs(m.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
-              m.gmtModified = dayjs(m.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
+              m.gmtCreate = moment(m.gmtCreate).format("YYYY年MM月DD日 HH:mm:ss");
+              m.gmtModified = moment(m.gmtModified).format("YYYY年MM月DD日 HH:mm:ss");
               return m;
             });
             this.pagination = pagination;
