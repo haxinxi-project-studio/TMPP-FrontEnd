@@ -227,7 +227,7 @@
        * @param obj 条目对象
        */
       handleEditBook(obj) {
-        this.editObj = obj;
+        this.editObj = {...obj};
         this.isModalVisible = true;
       },
       /**

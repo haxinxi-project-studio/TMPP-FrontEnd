@@ -3,12 +3,12 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       执行计划：
-      <a-select v-model="nowSelectPlanId" style="width: 320px;margin-bottom: 15px">
+      <a-select v-model="nowSelectPlanId" @change="handleSelectPlanChange" style="width: 320px;margin-bottom: 15px">
         <a-select-option v-for="planItem in planList" :value="planItem.id" :key="planItem.id">{{planItem.name}}
         </a-select-option>
       </a-select>
-      <a-button class="m-l-2" @click="allPass" :disabled="planList.length===0">全部审核通过</a-button>
-      <a-button class="m-l-2" @click="exportData" :disabled="planList.length===0">导出采购教材汇总表</a-button>
+      <a-button class="m-l-2" @click="allPass" :disabled="data.length===0">全部审核通过</a-button>
+      <a-button class="m-l-2" @click="exportData" :disabled="data.length===0">导出采购教材汇总表</a-button>
       <a-table :columns="columns"
                :rowKey="record => record.id"
                :dataSource="data"
@@ -301,6 +301,12 @@
           .do(response => {
             this.$message.success("操作成功");
           })
+      },
+      /**
+       * 处理执行计划选择改变
+       */
+      handleSelectPlanChange() {
+        this.fetch();
       }
     },
     created() {

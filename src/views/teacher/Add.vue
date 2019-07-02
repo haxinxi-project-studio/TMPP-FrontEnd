@@ -168,6 +168,15 @@
        * @param e 事件
        */
       handleByBookRadio(e) {
+        if (e.target.value) {
+          if (this.planList.length === 0 || this.discountList.length === 0 || this.courseTitleList.length === 0) {
+            this.disabledSubmitBtn = true;
+          }
+        } else {
+          if (this.planList.length !== 0 && this.courseTitleList.length !== 0) {
+            this.disabledSubmitBtn = false;
+          }
+        }
         this.isBuyBook = e.target.value;
       },
       /**

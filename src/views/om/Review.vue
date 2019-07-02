@@ -3,7 +3,7 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       执行计划：
-      <a-select v-model="nowSelectPlanId" style="width: 320px;margin-bottom: 15px">
+      <a-select v-model="nowSelectPlanId" @change="handleSelectPlanChange" style="width: 320px;margin-bottom: 15px">
         <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
         </a-select-option>
       </a-select>
@@ -271,6 +271,12 @@
         Download(Api.getTextbookPlanStatistics + "?execute_plan_id=" + this.nowSelectPlanId, headers => {
           return plan.year + ' 第' + (plan.term ? "二" : "一") + '学期 ' + plan.level + ' ' + plan.department + "征订教材计划统计表.xlsx";
         })
+      },
+      /**
+       * 处理执行计划选择改变
+       */
+      handleSelectPlanChange() {
+        this.fetch();
       }
     },
     created() {
