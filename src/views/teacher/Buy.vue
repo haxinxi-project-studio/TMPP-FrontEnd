@@ -3,7 +3,8 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       执行计划：
-      <a-select v-model="nowSelectPlanId" @change="onPlanSelectChange" style="width: 320px;margin-bottom: 15px">
+      <a-select v-model="nowSelectPlanId" @change="onPlanSelectChange" :loading="planLoading"
+                style="width: 320px;margin-bottom: 15px">
         <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
         </a-select-option>
       </a-select>
@@ -142,6 +143,8 @@
         editObj: {},
         //表格展示数据
         data: [],
+        //正在加载执行计划下拉框数据
+        planLoading: true,
         //执行计划下拉框数据
         planList: [],
         //目前选择的执行计划ID
@@ -251,6 +254,7 @@
             this.nowSelectPlanId = this.planList[0].id;
           })
           .doAfter(() => {
+            this.planLoading = false;
             if (this.planList.length === 0) {
               this.loading = false;
               this.$notification.info({

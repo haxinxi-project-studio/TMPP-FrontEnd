@@ -4,14 +4,15 @@
     <div class="content-style">
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-select v-model="nowSelectPlanId" @change="handlePlanChange" placeholder="选择执行计划">
+          <a-select v-model="nowSelectPlanId" @change="handlePlanChange" :loading="loading.plan" placeholder="选择执行计划">
             <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
             </a-select-option>
           </a-select>
           <a @click="down" :disabled="planList.length===0">下载该执行计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-select v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
+          <a-select :loading="loading.course"
+                    v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
                     placeholder="选择课程名称">
             <a-select-option v-for="courseTitle in courseTitleList" :key="courseTitle.id"
                              :value="courseTitle.courseCode">
@@ -50,7 +51,7 @@
                             v-decorator="['unitPrice',{rules: [{ required: true, message: '请输入正确的价格!',validator:valueMustThan0Validator }]}]"/>
           </a-form-item>
           <a-form-item label="折扣：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-select v-model="nowSelectDiscount">
+            <a-select v-model="nowSelectDiscount" :loading="loading.discount">
               <a-select-option v-for="discount in discountList" :key="discount.id" :value="discount.discount">
                 {{discount.discount}}
               </a-select-option>
@@ -107,6 +108,12 @@
         titleInfo: {
           title: '填写购书信息',
           subtitle: '填写购书信息表单',
+        },
+        //正在加载
+        loading: {
+          plan: true,
+          course: true,
+          discount: true
         },
         //购买图书
         isBuyBook: true,
@@ -199,6 +206,7 @@
             this.nowSelectPlanId = this.planList[0].id;
           })
           .doAfter(() => {
+            this.loading.plan = false;
             if (this.nowSelectPlanId !== '') {
               this.initCourseTitles(this.nowSelectPlanId);
             }
@@ -214,6 +222,9 @@
             }
             this.discountList = response.data.data;
             this.nowSelectDiscount = this.discountList[0].discount;
+          })
+          .doAfter(() => {
+            this.loading.discount = false;
           })
       },
       /**
@@ -232,6 +243,9 @@
             }
             this.courseTitleList = response.data.data;
             this.nowSelectCourseTitleId = this.courseTitleList[0].courseCode
+          })
+          .doAfter(() => {
+            this.loading.course = false;
           })
       },
       /**
