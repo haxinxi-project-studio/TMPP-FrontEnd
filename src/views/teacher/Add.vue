@@ -256,6 +256,10 @@
        * @param callback 回调
        */
       valueMustThan0Validator(rule, value, callback) {
+        if (value === undefined) {
+          callback('');
+          return;
+        }
         if (value < 1) {
           callback(value);
         } else {
