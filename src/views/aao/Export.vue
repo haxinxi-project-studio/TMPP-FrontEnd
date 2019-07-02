@@ -2,24 +2,25 @@
   <div>
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
-      学院：
-      <a-select v-model="nowSelectCollegeId" style="width: 120px">
-        <a-select-option v-for="college in collegeList" :key="college.id" :value="college.id">{{college.name}}
-        </a-select-option>
-      </a-select>
-      &nbsp;开设院系部：
-      <a-select v-model="nowTeachingDepartmentListId" style="width: 120px">
-        <a-select-option v-for="teachingDepartment in teachingDepartmentList" :key="teachingDepartment.id"
-                         :value="teachingDepartment.id">
-          {{teachingDepartment.name}}
-        </a-select-option>
+      学院/开设院系部：
+      <a-select v-model="nowSelectCTId" @change="handleSelectCtChange" :loading="loading.ct" style="min-width: 200px">
+        <a-select-opt-group label="学院">
+          <a-select-option v-for="college in collegeList" :key="college.id" :value="college.id">{{college.name}}
+          </a-select-option>
+        </a-select-opt-group>
+        <a-select-opt-group label="开设院系部">
+          <a-select-option v-for="teachingDepartment in teachingDepartmentList" :key="teachingDepartment.id"
+                           :value="teachingDepartment.id">
+            {{teachingDepartment.name}}
+          </a-select-option>
+        </a-select-opt-group>
       </a-select>
       &nbsp;学年：
-      <a-select v-model="nowSelectYearId" @change="handleYearChange" style="width: 120px">
+      <a-select v-model="nowSelectYearId" @change="handleYearChange" style="width: 120px" :loading="loading.year">
         <a-select-option v-for="year in yearList" :key="year" :value="year">{{year}}</a-select-option>
       </a-select>
       &nbsp;学期：
-      <a-select v-model="nowSelectTermId" style="width: 120px">
+      <a-select v-model="nowSelectTermId" style="width: 120px" :loading="loading.term">
         <a-select-option v-for="term in termList" :key="term" :value="term">{{term===0?'第一学期':'第二学期'}}</a-select-option>
       </a-select>
       <br/>
@@ -30,7 +31,7 @@
       <img class="m-t-2" :src="`${publicPath}export/zhengdingjiaocaihuizongbiao.png`" alt="征订教材汇总表图片">
       <a-divider/>
       执行计划：
-      <a-select v-model="nowSelectPlanId" style="width: 320px">
+      <a-select v-model="nowSelectPlanId" style="width: 320px" :loading="loading.planItem">
         <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
         </a-select-option>
       </a-select>
@@ -85,6 +86,15 @@
     data() {
       return {
         publicPath: process.env.BASE_URL,
+        //正在加载状态
+        loading: {
+          college: true,
+          teachingDepartment: true,
+          ct: true,
+          year: true,
+          term: true,
+          planItem: true
+        },
         titleInfo: {
           title: '导出表格',
           subtitle: '导出计划相关的表格',
@@ -109,6 +119,8 @@
         teachingDepartmentList: [],
         //目前选择的开设院系部ID
         nowTeachingDepartmentListId: '',
+        //学院/开设院系部ID
+        nowSelectCTId: ''
       };
     },
     methods: {
@@ -124,18 +136,33 @@
               return data;
             });
             this.nowSelectPlanId = this.planList[0].id;
+          })
+          .doAfter(() => {
+            this.loading.planItem = false;
           });
         //获取所有学院
         Get(Api.getColleges)
           .do(response => {
             this.collegeList = response.data.data;
             this.nowSelectCollegeId = this.collegeList[0].id;
+            this.nowSelectCTId = this.collegeList[0].id;
+          })
+          .doAfter(() => {
+            this.loading.college = false;
+            if (this.loading.teachingDepartment === false) {
+              this.loading.ct = false;
+            }
           });
         //获取开设院系部
         Get(Api.getTeachingDepartments)
           .do(response => {
             this.teachingDepartmentList = response.data.data;
-            this.nowTeachingDepartmentListId = this.teachingDepartmentList[0].id;
+          })
+          .doAfter(() => {
+            this.loading.teachingDepartment = false;
+            if (this.loading.college === false) {
+              this.loading.ct = false;
+            }
           });
         //获取学年
         Get(Api.getYear)
@@ -144,6 +171,7 @@
             this.nowSelectYearId = this.yearList[0];
           })
           .doAfter(() => {
+            this.loading.year = false;
             this.getTerm(this.nowSelectYearId);
           })
       },
@@ -157,6 +185,9 @@
             this.termList = response.data.data;
             this.nowSelectTermId = this.termList[0];
           })
+          .doAfter(() => {
+            this.loading.term = false;
+          });
       },
       /**
        * 处理学年更新
@@ -171,20 +202,22 @@
       exportDownBookMaterials() {
         const teachingDepartmentList = this.teachingDepartmentList;
         const collegeList = this.collegeList;
-        let teachingDepartmentName;
-        let collegeName;
+        let teachingDepartmentName = '';
+        let collegeName = '';
         for (let i = 0; i < teachingDepartmentList.length; i++) {
           if (teachingDepartmentList[i].id === this.nowTeachingDepartmentListId) {
             teachingDepartmentName = teachingDepartmentList[i].name;
+            break;
           }
         }
         for (let i = 0; i < collegeList.length; i++) {
           if (collegeList[i].id === this.nowSelectCollegeId) {
             collegeName = collegeList[i].name;
+            break;
           }
         }
         Download(Api.getDownBookMaterials + '?year=' + this.nowSelectYearId + '&college=' + this.nowSelectCollegeId + '&teachingDepartment=' + this.nowTeachingDepartmentListId + '&term=' + this.nowSelectTermId, headers => {
-          return this.nowSelectYearId + "第" + (this.nowSelectTermId ? "二学期" : "一学期-") + teachingDepartmentName + "-" + collegeName + "-征订教材汇总表.xlsx";
+          return this.nowSelectYearId + "第" + (this.nowSelectTermId ? "二学期" : "一学期-") + teachingDepartmentName + collegeName + "-征订教材汇总表.xlsx";
         });
       },
       /**
@@ -225,6 +258,20 @@
         Download(url + "?execute_plan_id=" + planId, headers => {
           return name + ".xlsx";
         });
+      },
+      /**
+       * 处理学院/开设院系部选择
+       */
+      handleSelectCtChange() {
+        let college = this.collegeList.find(c => c.id === this.nowSelectCTId);
+        if (college !== undefined) {
+          this.nowSelectCollegeId = college.id;
+          this.nowTeachingDepartmentListId = '';
+        } else {
+          let teachingDepartment = this.teachingDepartmentList.find(t => t.id === this.nowSelectCTId);
+          this.nowSelectCollegeId = '';
+          this.nowTeachingDepartmentListId = teachingDepartment.id;
+        }
       }
     },
     created() {

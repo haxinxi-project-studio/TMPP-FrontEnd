@@ -20,7 +20,7 @@
         </a-form-item>
         <a-form-item label="授课部门：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['teaching_department',{rules: [{ required: true, message: '请选择授课部门！' }]}]"
-                    placeholder="选择授课部门">
+                    placeholder="选择授课部门" :loading="teaching_department_loading">
             <a-select-option v-for="teaching_department in formData.teaching_department" :key="teaching_department.id"
                              :value="teaching_department.id">
               {{teaching_department.name}}
@@ -29,7 +29,7 @@
         </a-form-item>
         <a-form-item label="教育层次：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['educational_level',{rules: [{ required: true, message: '请选择教育层次！' }]}]"
-                    placeholder="选择教育层次">
+                    placeholder="选择教育层次" :loading="educational_levels_loading">
             <a-select-option v-for="educational_levels in formData.educational_levels" :key="educational_levels.id"
                              :value="educational_levels.id">
               {{educational_levels.educationalLevel}}
@@ -79,6 +79,10 @@
         },
         //正在提交
         loading: false,
+        //正在加载授课部门
+        teaching_department_loading: true,
+        //正在加载教育层次
+        educational_levels_loading: true,
         //禁用提交按钮
         disabledSubmitBtn: false,
         //表单数据
@@ -175,9 +179,13 @@
       initFormData() {
         Get(Api.getTeachingDepartments).do(response => {
           this.formData.teaching_department = response.data.data;
+        }).doAfter(() => {
+          this.teaching_department_loading = false;
         });
         Get(Api.getEducationalLevels).do(response => {
           this.formData.educational_levels = response.data.data;
+        }).doAfter(() => {
+          this.educational_levels_loading = false;
         });
       },
       /**

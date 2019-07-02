@@ -3,7 +3,8 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       执行计划：
-      <a-select v-model="nowSelectPlanId" @change="handleSelectPlanChange" style="width: 320px;margin-bottom: 15px">
+      <a-select v-model="nowSelectPlanId" @change="handleSelectPlanChange" :loading="loadingPlanList"
+                style="width: 320px;margin-bottom: 15px">
         <a-select-option v-for="planItem in planList" :value="planItem.id" :key="planItem.id">{{planItem.name}}
         </a-select-option>
       </a-select>
@@ -149,6 +150,8 @@
           title: '我的审核',
           subtitle: '对办公室主任审核通过的书籍进行审核',
         },
+        //正在加载执行计划下拉框数据
+        loadingPlanList: true,
         //执行计划下拉框数据
         planList: [],
         //目前选择的执行计划ID
@@ -264,6 +267,7 @@
             this.nowSelectPlanId = this.planList[0].id;
           })
           .doAfter(() => {
+            this.loadingPlanList = false;
             this.fetch();
           })
       },
