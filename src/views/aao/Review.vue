@@ -7,8 +7,8 @@
         <a-select-option v-for="planItem in planList" :value="planItem.id" :key="planItem.id">{{planItem.name}}
         </a-select-option>
       </a-select>
-      <a-button class="m-l-2" @click="allPass">全部审核通过</a-button>
-      <a-button class="m-l-2" @click="exportData">导出采购教材汇总表</a-button>
+      <a-button class="m-l-2" @click="allPass" :disabled="planList.length===0">全部审核通过</a-button>
+      <a-button class="m-l-2" @click="exportData" :disabled="planList.length===0">导出采购教材汇总表</a-button>
       <a-table :columns="columns"
                :rowKey="record => record.id"
                :dataSource="data"

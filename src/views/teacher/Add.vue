@@ -8,7 +8,7 @@
             <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
             </a-select-option>
           </a-select>
-          <a @click="down">下载该执行计划</a>
+          <a @click="down" :disabled="planList.length===0">下载该执行计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['courseCode',{rules: [{ required: true, message: '请选择课程名称！' }]}]"
@@ -82,7 +82,7 @@
           </a-form-item>
         </div>
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
-          <a-button type="primary" html-type="submit">提交</a-button>
+          <a-button type="primary" html-type="submit" :disabled="disabledSubmitBtn">提交</a-button>
         </a-form-item>
       </a-form>
     </div>
@@ -131,7 +131,9 @@
           publicationDate: '2019-01'
         },
         //默认出版日期
-        defaultPublicationDate: moment('2019-01', 'YYYY-MM')
+        defaultPublicationDate: moment('2019-01', 'YYYY-MM'),
+        //禁用提交按钮
+        disabledSubmitBtn: false
       };
     },
     methods: {
@@ -142,6 +144,13 @@
       handleSubmit(e) {
         e.preventDefault();
         this.form.validateFields((err, values) => {
+          if (this.discountList.length === 0) {
+            this.$notification.warn({
+              message: '没有折扣数据',
+              description: '目前没有折扣数据，请联系教务处添加折扣！',
+            });
+            return;
+          }
           if (!err) {
             const s = this.submitForm;
             this.submitForm = {...s, ...values, discount: this.nowSelectDiscount, executePlanId: this.nowSelectPlanId};
@@ -168,6 +177,7 @@
         Get(Api.getUndonePlan)
           .do(response => {
             if (response.data.data.length === 0) {
+              this.disabledSubmitBtn = true;
               this.$notification.info({
                 message: '没有未完成的执行计划',
                 description: '目前没有未完成的执行计划，请等待教务处添加执行计划或刷新页面后再试！',
@@ -180,10 +190,19 @@
             this.nowSelectPlanId = this.planList[0].id;
           })
           .doAfter(() => {
-            this.initCourseTitles(this.nowSelectPlanId);
+            if (this.nowSelectPlanId !== '') {
+              this.initCourseTitles(this.nowSelectPlanId);
+            }
           });
         Get(Api.getDiscounts)
           .do(response => {
+            if (response.data.data.length === 0) {
+              this.disabledSubmitBtn = true;
+              this.$notification.warn({
+                message: '没有折扣数据',
+                description: '目前没有折扣数据，请联系教务处添加折扣！',
+              });
+            }
             this.discountList = response.data.data;
             this.nowSelectDiscount = this.discountList[0].discount;
           })
@@ -195,6 +214,13 @@
       initCourseTitles(planId) {
         Get(Api.getCourseTitles + '?execute_plan_id=' + planId)
           .do(response => {
+            if (response.data.data.length === 0) {
+              this.disabledSubmitBtn = true;
+              this.$notification.info({
+                message: '没有课程信息数据',
+                description: '目前没有课程信息数据，请联系教务处或刷新再试！',
+              });
+            }
             this.courseTitleList = response.data.data;
             this.nowSelectCourseTitleId = this.courseTitleList[0].courseCode
           })

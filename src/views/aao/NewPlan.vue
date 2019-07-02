@@ -131,44 +131,23 @@
        */
       handleStartNumberChange(value) {
         //起始年份是否小于结束年份
-        if (value === undefined || value >= this.year.endValue) {
-          this.disabledSubmitBtn = true;
-          this.year = {
-            startValue: value,
-            endValue: this.year.endValue,
-            validateStatus: 'error',
-            errorMsg: '起始年份不应该大于结束年份'
-          }
-        } else {
-          this.disabledSubmitBtn = false;
-          this.year = {
-            startValue: value,
-            endValue: this.year.endValue
-          };
-          this.submitData.year = this.year.startValue + '-' + this.year.endValue;
-        }
+        this.year = {
+          startValue: value,
+          endValue: value + 1
+        };
+        this.submitData.year = this.year.startValue + '-' + this.year.endValue;
+
       },
       /**
        * 处理结束学年更改
        * @param value 新值
        */
       handleEndNumberChange(value) {
-        if (value === undefined || this.year.startValue >= value) {
-          this.disabledSubmitBtn = true;
-          this.year = {
-            endValue: value,
-            startValue: this.year.startValue,
-            validateStatus: 'error',
-            errorMsg: '起始年份不应该大于结束年份'
-          }
-        } else {
-          this.disabledSubmitBtn = false;
-          this.year = {
-            endValue: value,
-            startValue: this.year.startValue
-          };
-          this.submitData.year = this.year.startValue + '-' + this.year.endValue;
-        }
+        this.year = {
+          endValue: value,
+          startValue: value - 1
+        };
+        this.submitData.year = this.year.startValue + '-' + this.year.endValue;
       },
       /**
        * 检查文件是否是Excel

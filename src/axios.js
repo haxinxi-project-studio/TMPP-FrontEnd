@@ -111,7 +111,8 @@ export function Download(url, fileName) {
         window.URL.revokeObjectURL(url);
     }).catch(error => {
         if (error.response !== undefined) {
-            showErrorToast("下载失败：", error.response.data.msg);
+            console.warn(error);
+            showErrorToast("下载失败：", error.toString());
         }
     });
 }

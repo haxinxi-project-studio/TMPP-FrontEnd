@@ -5,7 +5,7 @@
       <a-button type="primary" style="margin-bottom: 20px" @click="visible=true">新增折扣</a-button>
       <a-modal title="新增折扣" :visible="visible" @ok="newDiscount" @cancel="visible=false"
                :confirmLoading="confirmLoading">
-        <a-input-number :min="0" :max="1" :step="0.01" :defaultValue="discount" @change="onNewDiscountChange"/>
+        <a-input-number :min="0" :max="1" :step="0.01" v-model="discount"/>
       </a-modal>
       <a-table :columns="columns" :dataSource="discountData" :rowKey="record => record.id" :pagination="false"
                :loading="loading"
@@ -158,13 +158,6 @@
           .doAfter(() => {
             this.loading = false;
           })
-      },
-      /**
-       * 新增折扣输入框值改变
-       * @param discount 折扣数
-       */
-      onNewDiscountChange(discount) {
-        this.discount = discount;
       },
       /**
        * 保存新的折扣

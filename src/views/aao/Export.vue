@@ -23,7 +23,9 @@
         <a-select-option v-for="term in termList" :key="term" :value="term">{{term===0?'第一学期':'第二学期'}}</a-select-option>
       </a-select>
       <br/>
-      <a-button @click="exportDownBookMaterials" type="primary" icon="download" class="m-t-2">导出征订教材汇总表 ↓</a-button>
+      <a-button :disabled="yearList.length===0" @click="exportDownBookMaterials" type="primary" icon="download"
+                class="m-t-2">导出征订教材汇总表 ↓
+      </a-button>
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/zhengdingjiaocaihuizongbiao.png`" alt="征订教材汇总表图片">
       <a-divider/>
@@ -33,27 +35,39 @@
         </a-select-option>
       </a-select>
       <br/>
-      <a-button @click="exportTable(1)" type="primary" icon="download" class="m-t-2">导出考试/考查/总体订书率表 ↓</a-button>
+      <a-button :disabled="planList.length===0" @click="exportTable(1)" type="primary" icon="download" class="m-t-2">
+        导出考试/考查/总体订书率表 ↓
+      </a-button>
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/kaoshikaochazongtidingshulv.png`" alt="考试/考查/总体订书率图片">
       <br/>
-      <a-button @click="exportTable(2)" type="primary" icon="download" class="m-t-2">导出出版社统计数量表 ↓</a-button>
+      <a-button :disabled="planList.length===0" @click="exportTable(2)" type="primary" icon="download" class="m-t-2">
+        导出出版社统计数量表 ↓
+      </a-button>
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/chubanshetongjishuliangbiao.png`" alt="出版社统计数量图片">
       <br/>
-      <a-button @click="exportTable(3)" type="primary" icon="download" class="m-t-2">导出征订教材样书汇总表 ↓</a-button>
+      <a-button :disabled="planList.length===0" @click="exportTable(3)" type="primary" icon="download" class="m-t-2">
+        导出征订教材样书汇总表 ↓
+      </a-button>
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/zhengdingjiaocaiyangshuhuizongbiao.png`" alt="征订教材样书汇总图片">
       <br/>
-      <a-button @click="exportTable(4)" type="primary" icon="download" class="m-t-2">导出教师领取教材汇总表 ↓</a-button>
+      <a-button :disabled="planList.length===0" @click="exportTable(4)" type="primary" icon="download" class="m-t-2">
+        导出教师领取教材汇总表 ↓
+      </a-button>
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/jiaoshilingqujiaocaihuizongbiao.png`" alt="教师领取教材汇总图片">
       <br/>
-      <a-button @click="exportTable(5)" type="primary" icon="download" class="m-t-2">导出学生班级领取教材反馈表 ↓</a-button>
+      <a-button :disabled="planList.length===0" @click="exportTable(5)" type="primary" icon="download" class="m-t-2">
+        导出学生班级领取教材反馈表 ↓
+      </a-button>
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/xueshengbanjilingqujiaocaifankuibiao.png`" alt="学生班级领取教材反馈图片">
       <br/>
-      <a-button @click="exportTable(6)" type="primary" icon="download" class="m-t-2">导出采购教材汇总表↓</a-button>
+      <a-button :disabled="planList.length===0" @click="exportTable(6)" type="primary" icon="download" class="m-t-2">
+        导出采购教材汇总表↓
+      </a-button>
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/caigoujiaocaihuizongbiao.png`" alt="采购教材汇总图片">
     </div>
@@ -179,36 +193,37 @@
        */
       exportTable(which) {
         const planId = this.nowSelectPlanId;
-        if (planId === '') {
-          this.$notification.info({
-            message: '没有已完成的执行计划',
-            description: '目前没有已完成的执行计划，请添加执行计划或刷新页面后再试！',
-          });
-          return;
-        }
+        let planName = this.planList.filter(p => p.id === planId).map(data => data.year + '第' + (data.term ? "二" : "一") + '学期-' + data.level + '-' + data.department + ' ')[0];
         let url = '';
+        let name = planName;
         switch (which) {
           case 1:
             url = Api.getSummaryTable;
+            name += '考试-考察-总体订书率表';
             break;
           case 2:
             url = Api.getPublishingHouseStatistics;
+            name += '出版社统计数量表';
             break;
           case 3:
             url = Api.getSubscriptionBook;
+            name += '征订教材样书统计表';
             break;
           case 4:
             url = Api.getTeacherReceivingTextbook;
+            name += '教师领取教材汇总表';
             break;
           case 5:
             url = Api.getStudentTextbook;
+            name += '学生班级领取教材反馈表';
             break;
           case 6:
             url = Api.getProcurementTable;
+            name += '导出采购教材汇总表';
             break;
         }
         Download(url + "?execute_plan_id=" + planId, headers => {
-          return "统计表.xlsx";
+          return name + ".xlsx";
         });
       }
     },

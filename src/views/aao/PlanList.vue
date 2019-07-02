@@ -163,7 +163,7 @@
        * @param data 执行计划
        */
       down(data) {
-        Download(Api.getDownPlan + '/?id=' + data.id, headers => {
+        Download(Api.getDownPlan + '?executePlanId=' + data.id, headers => {
           let ext = '.xlsx';
           if (headers['content-type'] === "application/vnd.ms-excel") {
             ext = '.xls';
