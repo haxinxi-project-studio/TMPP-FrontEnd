@@ -6,7 +6,7 @@
 */
 'use strict';
 //API地址
-export const BASE_URL = "http://itning:8080";
+export const BASE_URL = "http://localhost:8080";
 //登录接口
 export const CAS_LOGIN_URL = BASE_URL + "/login";
 //注销接口
@@ -63,6 +63,8 @@ export default {
     getStudentTextbook: BASE_URL + '/student_textbook',
     //导出采购教材汇总表
     getProcurementTable: BASE_URL + '/procurement_table',
+    //导出征订教材计划表
+    getSubscriptionPlan: BASE_URL + '/subscription_plan',
     //查询所有折扣
     getDiscounts: BASE_URL + '/discounts',
     //添加折扣

@@ -18,9 +18,9 @@
             <a-radio :value="1">第二学期</a-radio>
           </a-radio-group>
         </a-form-item>
-        <a-form-item label="授课部门：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="开课院系部：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select v-decorator="['teaching_department',{rules: [{ required: true, message: '请选择授课部门！' }]}]"
-                    placeholder="选择授课部门" :loading="teaching_department_loading">
+                    placeholder="选择开课院系部" :loading="teaching_department_loading">
             <a-select-option v-for="teaching_department in formData.teaching_department" :key="teaching_department.id"
                              :value="teaching_department.id">
               {{teaching_department.name}}
@@ -36,16 +36,16 @@
             </a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="征订计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-upload name="planFile" :multiple="false" accept=".xls,.xlsx" :beforeUpload="beforeUpload"
                     :customRequest="customRequest"
-                    v-decorator="['plan',{rules: [{ required: true, message: '请上传执行计划！' }]}]">
+                    v-decorator="['plan',{rules: [{ required: true, message: '请上传征订计划！' }]}]">
             <a-button>
               <a-icon type="upload"/>
               选择文件（支持扩展名：.xls .xlsx）
             </a-button>
           </a-upload>
-          <a @click="downTemplate">下载执行计划模板</a>
+          <a @click="downTemplate">下载征订计划模板</a>
         </a-form-item>
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
           <a-button type="primary" html-type="submit" :disabled="disabledSubmitBtn" :loading="loading">提交</a-button>
@@ -68,7 +68,7 @@
         form: this.$form.createForm(this),
         titleInfo: {
           title: '新增计划',
-          subtitle: '新增一个教材执行计划',
+          subtitle: '新增一个教材征订计划',
         },
         //学年
         year: {
@@ -193,7 +193,7 @@
        */
       downTemplate() {
         Download(Api.getDownloadPlanTemplate, headers => {
-          return "执行计划模板.xlsx"
+          return "征订计划模板.xlsx"
         });
       },
       /**

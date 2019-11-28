@@ -2,7 +2,7 @@
   <div>
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
-      执行计划：
+      征订计划：
       <a-select v-model="nowSelectPlanId" @change="handleSelectPlanChange" :loading="planLoading"
                 style="width: 320px;margin-bottom: 15px">
         <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
@@ -53,7 +53,7 @@
       dataIndex: 'isbn'
     },
     {
-      title: '教材名称',
+      title: '教材名称(版次)',
       dataIndex: 'textBookName',
       width: 200,
     },

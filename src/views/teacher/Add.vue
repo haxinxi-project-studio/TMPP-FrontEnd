@@ -3,12 +3,12 @@
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
       <a-form :form="form" @submit="handleSubmit">
-        <a-form-item label="执行计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-          <a-select v-model="nowSelectPlanId" @change="handlePlanChange" :loading="loading.plan" placeholder="选择执行计划">
+        <a-form-item label="征订计划：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+          <a-select v-model="nowSelectPlanId" @change="handlePlanChange" :loading="loading.plan" placeholder="选择征订计划">
             <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
             </a-select-option>
           </a-select>
-          <a @click="down" :disabled="planList.length===0">下载该执行计划</a>
+          <a @click="down" :disabled="planList.length===0">下载该征订计划</a>
         </a-form-item>
         <a-form-item label="课程名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-select :loading="loading.course"
@@ -91,13 +91,13 @@
 </template>
 
 <script>
-  import ContentTitle from "@/components/ContentTitle";
-  import {Download, Get, Post} from "../../axios";
-  import Api from "../../api";
-  import moment from 'moment';
-  import 'moment/locale/zh-cn';
+    import ContentTitle from "@/components/ContentTitle";
+    import {Download, Get, Post} from "../../axios";
+    import Api from "../../api";
+    import moment from 'moment';
+    import 'moment/locale/zh-cn';
 
-  moment.locale('zh-cn');
+    moment.locale('zh-cn');
 
   export default {
     name: "Add",
@@ -195,8 +195,8 @@
             if (response.data.data.length === 0) {
               this.disabledSubmitBtn = true;
               this.$notification.info({
-                message: '没有未完成的执行计划',
-                description: '目前没有未完成的执行计划，请等待教务处添加执行计划或刷新页面后再试！',
+                message: '没有未完成的征订计划',
+                description: '目前没有未完成的征订计划，请等待教务处添加征订计划或刷新页面后再试！',
               });
             }
             this.planList = response.data.data.map(data => {
@@ -286,7 +286,7 @@
       down() {
         const plan = this.planList.filter(plan => plan.id === this.nowSelectPlanId)[0];
         Download(Api.getDownPlan + "?executePlanId=" + this.nowSelectPlanId, headers => {
-          return plan.year + ' 第' + (plan.term ? "二" : "一") + '学期 ' + plan.level + ' ' + plan.department + "执行计划.xlsx";
+          return plan.year + ' 第' + (plan.term ? "二" : "一") + '学期 ' + plan.level + ' ' + plan.department + "征订计划.xlsx";
         })
       }
     },

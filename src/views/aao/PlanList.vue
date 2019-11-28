@@ -81,7 +81,7 @@
       return {
         titleInfo: {
           title: '计划列表',
-          subtitle: '展示历史完成的执行计划和目前正在进的计划，并展示计划状态',
+          subtitle: '展示历史完成的征订计划和目前正在进的计划，并展示计划状态',
         },
         //筛选按钮值
         filterRadioGroupValue: 'all',
@@ -171,7 +171,7 @@
           if (headers['content-type'] === "application/vnd.ms-excel") {
             ext = '.xls';
           }
-          return data.year + data.term + data.level + data.department + '执行计划' + ext
+          return data.year + data.term + data.level + data.department + '征订计划' + ext
         });
       },
       /**

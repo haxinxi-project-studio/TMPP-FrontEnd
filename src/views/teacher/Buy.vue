@@ -2,12 +2,13 @@
   <div>
     <content-title :title="titleInfo.title" :subtitle="titleInfo.subtitle"/>
     <div class="content-style">
-      执行计划：
+      征订计划：
       <a-select v-model="nowSelectPlanId" @change="onPlanSelectChange" :loading="planLoading"
                 style="width: 320px;margin-bottom: 15px">
         <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
         </a-select-option>
       </a-select>
+      <a-button style="margin-left: 6px" @click="handleDownload">下载征订教材计划单</a-button>
       <a-table :columns="columns"
                :rowKey="record => record.id"
                :dataSource="data"
@@ -33,7 +34,7 @@
 <script>
   import ContentTitle from "@/components/ContentTitle";
   import TeacherModifyBookModal from "@/components/TeacherModifyBookModal";
-  import {Get} from "../../axios";
+  import {Download, Get} from "../../axios";
   import Api from "../../api";
   import moment from 'moment';
   import 'moment/locale/zh-cn';
@@ -167,6 +168,11 @@
       };
     },
     methods: {
+        handleDownload(){
+          Download(Api.getSubscriptionPlan+"?executePlanId="+this.nowSelectPlanId,header=>{
+              return "征订教材计划单.xlsx"
+          })
+        },
       /**
        *
        * @param pagination
@@ -261,8 +267,8 @@
             if (this.planList.length === 0) {
               this.loading = false;
               this.$notification.info({
-                message: '没有未完成的执行计划',
-                description: '目前没有未完成的执行计划，请等待教务处添加执行计划或刷新页面后再试！',
+                message: '没有未完成的征订计划',
+                description: '目前没有未完成的征订计划，请等待教务处添加征订计划或刷新页面后再试！',
               });
             } else {
               this.fetch();

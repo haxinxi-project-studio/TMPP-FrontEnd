@@ -30,7 +30,7 @@
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/zhengdingjiaocaihuizongbiao.png`" alt="征订教材汇总表图片">
       <a-divider/>
-      执行计划：
+      征订计划：
       <a-select v-model="nowSelectPlanId" style="width: 320px" :loading="loading.planItem">
         <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
         </a-select-option>

@@ -86,7 +86,13 @@ function havePermission(path) {
         case 'A':
             return A.includes(p);
         //办公室主任
-        case 'O':
+        case 'O1':
+        case 'O2':
+        case 'O3':
+        case 'O4':
+        case 'O5':
+        case 'O6':
+        case 'O7':
             return O.includes(p);
         //教师
         case 'T':
