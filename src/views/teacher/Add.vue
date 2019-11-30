@@ -61,8 +61,8 @@
             <a-input-number style="width: 200px"
                             v-decorator="['teacherBookNumber',{rules: [{ required: true, message: '请输入正确的教师样书数量!',validator:valueMustThan0Validator }]}]"/>
           </a-form-item>
-          <a-form-item label="获奖信息和丛书名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
-            <a-input v-decorator="['awardInformation',{rules: [{ required: true, message: '请输入获奖信息和丛书名称!' }]}]"/>
+          <a-form-item label="征订教材所属系列：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+            <a-input v-decorator="['awardInformation',{rules: [{ required: true, message: '请输入征订教材所属系列!' }]}]"/>
           </a-form-item>
           <a-form-item label="出版日期：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
             <a-month-picker @change="handlePublicationDateChange" :defaultValue="defaultPublicationDate"/>

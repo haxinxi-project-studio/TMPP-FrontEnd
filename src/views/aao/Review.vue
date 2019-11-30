@@ -99,7 +99,7 @@
             width: 100,
         },
         {
-            title: '获奖信息和丛书名称',
+            title: '征订教材所属系列',
             dataIndex: 'awardInformation',
             width: 100,
         },

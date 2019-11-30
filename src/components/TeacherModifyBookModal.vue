@@ -48,7 +48,7 @@
         <a-form-item label="教师样书数量：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-input-number style="width: 200px" v-model="bookObj.teacherBookNumber"/>
         </a-form-item>
-        <a-form-item label="获奖信息和丛书名称：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
+        <a-form-item label="征订教材所属系列：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
           <a-input v-model="bookObj.awardInformation"/>
         </a-form-item>
         <a-form-item label="出版日期：" :label-col="{ span: 5 }" :wrapper-col="{ span: 12 }">
