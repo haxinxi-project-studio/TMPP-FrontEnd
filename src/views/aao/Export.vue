@@ -30,6 +30,21 @@
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/zhengdingjiaocaihuizongbiao.png`" alt="征订教材汇总表图片">
       <a-divider/>
+
+      征订计划：
+      <a-select v-model="executePlanId" style="width: 320px" :loading="loading.planItem">
+        <a-select-option v-for="executePlanItem in executePlans" :key="executePlanItem.id" :value="executePlanItem.id">{{executePlanItem.name}}
+        </a-select-option>
+      </a-select>
+      <br/>
+      <a-button :disabled="executePlans.length===0" @click="exportProcurementTable()" type="primary" icon="download" class="m-t-2">
+        导出采购教材汇总表↓
+      </a-button>
+      <br/>
+      <img class="m-t-2" :src="`${publicPath}export/caigoujiaocaihuizongbiao.png`" alt="采购教材汇总图片">
+      <br/>
+      <a-divider/>
+
       征订计划：
       <a-select v-model="nowSelectPlanId" style="width: 320px" :loading="loading.planItem">
         <a-select-option v-for="planItem in planList" :key="planItem.id" :value="planItem.id">{{planItem.name}}
@@ -66,11 +81,6 @@
       <br/>
       <img class="m-t-2" :src="`${publicPath}export/xueshengbanjilingqujiaocaifankuibiao.png`" alt="学生班级领取教材反馈图片">
       <br/>
-      <a-button :disabled="planList.length===0" @click="exportTable(6)" type="primary" icon="download" class="m-t-2">
-        导出采购教材汇总表↓
-      </a-button>
-      <br/>
-      <img class="m-t-2" :src="`${publicPath}export/caigoujiaocaihuizongbiao.png`" alt="采购教材汇总图片">
     </div>
   </div>
 </template>
@@ -99,6 +109,10 @@
           title: '导出表格',
           subtitle: '导出计划相关的表格',
         },
+        //所有执行计划下拉框数据
+        executePlans:[],
+        //当前选择的执行计划ID
+        executePlanId:'',
         //执行计划下拉框数据
         planList: [],
         //目前选择的执行计划ID
@@ -128,6 +142,18 @@
        * 初始化数据
        */
       initData() {
+        //获取所有执行计划
+        Get(Api.getExecutePlans)
+          .do(response => {
+            this.executePlans = response.data.data.map(data => {
+              data.name = data.year + ' 第' + (data.term ? "二" : "一") + '学期 ' + data.level + ' ' + data.department;
+              return data;
+            });
+            this.executePlanId = this.executePlans[0].id;
+          });
+
+
+
         //获取已完成执行计划
         Get(Api.getDonePlan)
           .do(response => {
@@ -250,11 +276,17 @@
             url = Api.getStudentTextbook;
             name += '学生班级领取教材反馈表';
             break;
-          case 6:
-            url = Api.getProcurementTable;
-            name += '导出采购教材汇总表';
-            break;
         }
+        Download(url + "?execute_plan_id=" + planId, headers => {
+          return name + ".xlsx";
+        });
+      },
+
+      exportProcurementTable(){
+        const planId = this.executePlanId;
+        let planName = this.executePlans.filter(p => p.id === planId).map(data => data.year + '第' + (data.term ? "二" : "一") + '学期-' + data.level + '-' + data.department + ' ')[0];
+        let url = Api.getProcurementTable;
+        let name = planName+'导出采购教材汇总表';
         Download(url + "?execute_plan_id=" + planId, headers => {
           return name + ".xlsx";
         });

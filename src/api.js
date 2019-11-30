@@ -15,7 +15,9 @@ export const CAS_LOGOUT_URL = BASE_URL + "/logout";
 //以下所有Api必须带请求头Authorization
 
 export default {
-    //获取未完成执行计划
+    ///获取所有计划
+    getExecutePlans:BASE_URL +'/execute_AllPlan',
+        //获取未完成执行计划
     getUndonePlan: BASE_URL + '/undone_execute_plan',
     //下载执行计划
     getDownPlan: BASE_URL + '/down_execute_plan',
